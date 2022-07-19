@@ -14,14 +14,14 @@ CREATE TABLE profesores (
 
 CREATE TABLE ueas (
    uea INT NOT NULL, 
-   uea_nombre TEXT NOT NULL,
+   nombre TEXT NOT NULL,
    horas DECIMAL(3, 1) NOT NULL, 
    PRIMARY KEY (uea)
 );
 
 CREATE TABLE salones (
    salon INT NOT NULL, 
-   salon_nombre VARCHAR(32) NOT NULL, 
+   nombre VARCHAR(32) NOT NULL, 
    aforo100 SMALLINT DEFAULT NULL,
    aforo75 SMALLINT DEFAULT NULL,
    aforo50 SMALLINT DEFAULT NULL,
