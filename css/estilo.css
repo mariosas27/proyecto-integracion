@@ -1,0 +1,11 @@
+/* si el usuario ya ingresó, body tendrá class="autenticado" */
+
+/* si el usuario no está autenticado, ocultar cualquier cosa marcada con class="visible_autenticado" */
+body:not(.autenticado) .visible_autenticado {
+   display: none;
+}
+
+/* si el usuario sí está autenticado, ocultar cualquier cosa marcada con class="visible_no_autenticado" */
+body.autenticado .visible_no_autenticado {
+   display: none;
+}

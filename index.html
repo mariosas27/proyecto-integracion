@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="css/estilo.css">
+      <script src="./includes/ajax.js" defer></script>
+      <script src="./scripts/sesion.js" defer></script>
+      <script src="https://accounts.google.com/gsi/client" defer></script>
+      <title>Hola</title>
+   </head>
+   <body onload="inicia_sesion( )">
+      <div class="visible_no_autenticado">
+         Entra:
+         <div id="g_id_onload" data-client_id="XXXXXX" data-auto_prompt="false" data-callback="inicia_sesion"></div>
+         <div class="g_id_signin" data-type="standard" data-size="large"></div>
+      </div>
+      <div class="visible_autenticado">
+         Ya estás dentro
+      </div>
+   </body>
+</html>
