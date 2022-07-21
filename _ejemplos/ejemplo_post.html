@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script src="../includes/ajax.js" defer></script>
+      <title>Hola</title>
+   </head>
+   <body onload="ejemplo( )">
+      <script>
+         async function ejemplo( ) {
+            let res = await ajax_post("ejemplo_entrada.php", { "servicio": "longitud", "cadena": "asdasdasdasd" }, 1000);
+            console.log(res);
+         }
+      </script>
+   </body>
+</html>

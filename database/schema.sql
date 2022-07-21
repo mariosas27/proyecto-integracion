@@ -26,7 +26,7 @@ CREATE TABLE salones (
    aforo75 SMALLINT DEFAULT NULL,
    aforo50 SMALLINT DEFAULT NULL,
    PRIMARY KEY (salon),
-   UNIQUE (salon_nombre)
+   UNIQUE (nombre)
 );
 
 CREATE TABLE evaluaciones (
@@ -61,7 +61,7 @@ CREATE TABLE horarios_grupo (
 );
 
 CREATE TABLE profesores_grupo (
-   profesor_grupo INT NOT NULL,
+   profesor_grupo INT NOT NULL AUTO_INCREMENT,
    grupo INT NOT NULL, 
    profesor INT DEFAULT NULL,
    PRIMARY KEY (profesor_grupo),
