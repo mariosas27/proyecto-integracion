@@ -20,8 +20,9 @@ CREATE TABLE ueas (
 );
 
 CREATE TABLE salones (
-   salon INT NOT NULL, 
-   nombre VARCHAR(32) NOT NULL, 
+   salon INT NOT NULL,
+   edificio VARCHAR(50) NOT NULL, 
+   nombre VARCHAR(100) NOT NULL, 
    aforo100 SMALLINT DEFAULT NULL,
    aforo75 SMALLINT DEFAULT NULL,
    aforo50 SMALLINT DEFAULT NULL,
