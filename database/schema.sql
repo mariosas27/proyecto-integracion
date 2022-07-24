@@ -20,7 +20,7 @@ CREATE TABLE ueas (
 );
 
 CREATE TABLE salones (
-   salon INT NOT NULL,
+   salon INT NOT NULL AUTO_INCREMENT,
    edificio VARCHAR(50) NOT NULL, 
    nombre VARCHAR(100) NOT NULL, 
    aforo100 SMALLINT DEFAULT NULL,
