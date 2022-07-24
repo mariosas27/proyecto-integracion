@@ -1,0 +1,108 @@
+"EDIFICIO","SALON","100.00%","PROTEM","75.00%"
+"B","B307 ",50,24,37
+"B","B308 ",50,24,37
+"B","B309 ",50,24,37
+"B","B310 ",50,24,37
+"B","B311 ",50,24,37
+"E","E102 ",50,24,37
+"E","E103 ",50,24,37
+"E","E104 ",50,24,37
+"E","E105 ",50,24,37
+"E","E106 ",50,24,37
+"E","E107 ",50,24,37
+"E","E108 ",50,24,37
+"E","E109 ",50,24,37
+"E","E110 ",50,24,37
+"E","E210 ",50,24,37
+"E","E211 ",50,24,37
+"E","E301 ",50,24,37
+"E","E302 ",50,24,37
+"E","E303 ",50,24,37
+"E","E304 ",50,24,37
+"E","E305 ",50,24,37
+"E","E307 ",50,24,37
+"F","F310 ",50,24,37
+"F","F311 ",50,24,37
+"F","F312 ",50,24,37
+"K","K105 ",25,18,18
+"K","K106 ",25,15,18
+"K","K107 ",25,18,18
+"K","K108 ",25,18,18
+"K","K109 ",25,15,18
+"K","K112 ",25,15,18
+"K","K113 ",25,18,18
+"K","K114 ",50,24,37
+"K","K202 ",25,18,18
+"K","K203 ",25,15,18
+"K","K204 ",25,18,18
+"K","K303 ",25,15,18
+"K","K304 ",25,18,18
+"K","K305 ",25,18,18
+"EDIFICIO O PRIMER PISO ","Laboratorio 104 Ambiental y Química",20,7,15
+"EDIFICIO O PRIMER PISO ","Laboratorio 105 Ambiental y Química",20,9,15
+"EDIFICIO O PRIMER PISO ","Laboratorio 106 Ambiental y Química",15,9,11
+"EDIFICIO O P. B. ","Laboratorio de Aire",20,7,15
+"EDIFICIO P PRIMER PISO ","Laboratorio 1, Eléctrica",15,7,11
+"EDIFICIO P PRIMER PISO ","Laboratorio 2, Eléctrica",15,7,11
+"EDIFICIO P PRIMER PISO ","Laboratorio 3, Eléctrica",15,8,11
+"EDIFICIO P PRIMER PISO ","Laboratorio 4, Eléctrica",15,6,11
+"EDIFICIO 2 P P. B. ","Laboratorio de Hidráulica, Química y Termofluidos",60,13,45
+"EDIFICIO 2 P PRIMER PISO ","Laboratorio de Propiedades de los Fluidos ",8,3,6
+"EDIFICIO 2 P P. B. ","Taller de Mecánico",15,10,11
+"EDIFICIO 3 P P. B. ","Laboratorio de Fundición",15,7,11
+"EDIFICIO 2 P PRIMER PISO ","Laboratorio de Mecanismos",12,6,9
+"EDIFICIO 2 P PRIMER PISO ","CEDAC",25,15,18
+"EDIFICIO 2 P P. B. ","CEMAC",15,4,11
+"EDIFICIO 2 P P. B. ","Laboratorio de Dinámica y Vibraciones",15,4,11
+"EDIFICIO 2 P P. B. ","Laboratorio de Metrología",15,5,11
+"EDIFICIO 3 P PRIMER PISO ","Laboratorio de Arenas",15,6,11
+"EDIFICIO 3 P P. B. ","Caseta de soldadura",8,3,6
+"Edificio G, segundo piso ","G208 ",50,24,37
+"Edificio G, segundo piso ","G206 ",36,18,27
+"Edifico E, tercer piso ","E306 ",32,16,24
+"Edifico E, tercer piso ","E306 ",32,16,24
+"Edificio T, planta alta ","Ada Byron ",36,18,27
+"Edificio T, planta alta ","Charles Babbage",40,20,30
+"Edificio W, Planta Baja","Lab. de Industrial",30,15,22
+"Edificio W, tercer piso ","W305 ",36,12,27
+"Edificio E, tercer piso ","E311 / Sala audiovisual",16,8,12
+"Edifico F, tercer piso ","F301/ Laboratorio de Comunicaciones",18,12,13
+"Edifico F, tercer piso ","F302/ Laboratorio de Digitales",20,14,15
+"Edifico F, tercer piso ","F303 / Sala audiovisual",40,24,30
+"Edifico F, tercer piso ","F304 / Sala audiovisual",40,24,30
+"Edifico F, tercer piso ","F305 / Sala audiovisual",40,24,30
+"Edifico F, tercer piso ","F306 / Sala de computo",20,15,15
+"Edifico F, tercer piso ","F307 / Sala audiovisual",20,15,15
+"Edificio G, Tercer piso ","G302-A / Aula de Redes",16,7,12
+"Edificio G, Tercer piso ","G302-B / Aula de Redes",16,7,12
+"Edificio G, Tercer piso ","G304 / Laboratorio de Control",30,22,22
+"Edificio G, Tercer piso ","G306 / Laboratorio de Electrónica",30,22,22
+"Edificio G, Tercer piso ","G308 / Laboratorio de Potencia",30,22,22
+"Edificio G, Tercer piso ","G314 / Sala de computo",20,13,15
+"K ","K012 ",20,10,15
+"K ","K101 ",50,21,37
+"K ","K110 ",35,15,26
+"K ","K111 ",35,15,26
+"K ","K115 ",50,21,37
+"W-B 1ºPISO ","Laboratorio Interdisciplinario de Electroquímica e Ingeniería de Materiales",20,15,15
+"P3 ","Laboratorio de Materiales Avanzados",15,5,11
+"P4 ANEXO ","Laboratorio de Modelos Medianos",15,0,11
+"P4 ANEXO ","Laboratorio de Estructuras",15,7,11
+"P3 ","Laboratorio de Ingeniería de Materiales",15,7,11
+"P3 ","Laboratorio de Metalurgia Computacional",15,7,11
+"P3 ","Planta de Procesos Metalúrgicos y Materiales",30,8,22
+"P ","Laboratorio de metalografía y microscopios",20,13,15
+"P ","Laboratorio de Ciencia de Materiales",15,7,11
+"P3 ","Laboratorio de Construcción",15,7,11
+"P3 ","Laboratorio de Geotecnia",15,7,11
+"G","G03",36,15,27
+"G","G04",8,6,6
+"G","G06",36,15,27
+"G","G07",36,15,27
+"G","G101",36,15,27
+"G","G102",36,15,27
+"G","G104",15,7,11
+"G","G106",36,15,27
+"G","G107",36,15,27
+"G","G109",36,15,27
+"G","G214",36,15,27
