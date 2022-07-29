@@ -11,6 +11,12 @@
       $conexion = new db_access(HOST_DB, USER_DB, PASSWORD_DB, DATABASE_DB);
 
       $entrada = new input( );
+      $entrada->validate($_POST, 'servicio', make_filter(match_predicate('estado')));
+      if ($entrada->status( )) {
+         die(json_encode(estado_impl( )));
+      }
+
+      $entrada = new input( );
       $entrada->validate($_POST, 'servicio', make_filter(match_predicate('entrar')));
       $entrada->validate($_POST, 'token', make_filter('is_string'));                 
       if ($entrada->status( )) {                                                     
@@ -23,6 +29,10 @@
    }
    
    // implementación de casos de uso
+   
+   function estado_impl( ) {
+      return [ 'estado' => true, 'valor' => [ ] ];
+   }
    
    function entrar_impl($conexion, $token) {
 		$cliente = new Google_Client([ 'client_id' => '946102343979-9sbkkauvf8k7qeer1g300of8knfnu3pm.apps.googleusercontent.com' ]);
