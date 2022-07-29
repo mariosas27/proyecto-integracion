@@ -25,7 +25,7 @@
    // implementación de casos de uso
    
    function entrar_impl($conexion, $token) {
-		$cliente = new Google_Client([ 'client_id' => 'XXXXXX' ]);
+		$cliente = new Google_Client([ 'client_id' => '946102343979-9sbkkauvf8k7qeer1g300of8knfnu3pm.apps.googleusercontent.com' ]);
 		$cliente->setHttpClient(new \GuzzleHttp\Client([ 'curl' => [ CURLOPT_SSL_VERIFYPEER => false ] ]));
 		if (!($payload = $cliente->verifyIdToken($token))) {
          return [ 'estado' => false, 'valor' => 'token_invalido' ];
