@@ -4,11 +4,11 @@ USE proyecto_integracion;
 
 CREATE TABLE profesores (
    profesor INT NOT NULL, 
-   apaterno TEXT NOT NULL, 
-   amaterno TEXT NOT NULL, 
+   apellidos TEXT NOT NULL, 
    nombre TEXT NOT NULL, 
-   correo VARCHAR(254) DEFAULT NULL,
-   depto ENUM("CB", "EL", "EN", "MA", "SI") DEFAULT NULL,
+   email VARCHAR(254) DEFAULT NULL,
+   departamento ENUM("CB", "EL", "EN", "MA", "SI") DEFAULT NULL,
+   notas TEXT NOT NULL DEFAULT "",
    PRIMARY KEY (profesor)
 );
 
@@ -21,8 +21,8 @@ CREATE TABLE ueas (
 
 CREATE TABLE salones (
    salon INT NOT NULL AUTO_INCREMENT,
-   edificio VARCHAR(50) NOT NULL, 
-   nombre VARCHAR(100) NOT NULL, 
+   edificio VARCHAR(64) NOT NULL, 
+   nombre VARCHAR(128) NOT NULL, 
    aforo100 SMALLINT DEFAULT NULL,
    aforo75 SMALLINT DEFAULT NULL,
    aforo50 SMALLINT DEFAULT NULL,
