@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="css/estilo.css">
+      <script src="./includes/ajax.js" defer></script>
+      <script src="./scripts/sesion.js" defer></script>
+      
+      <title>UEAS</title>
+   </head>
+   <body onload="inicia_sesion(null, true)">
+      
+      <div class="visible_autenticado" style="max-width: 90%; margin: 0 auto">
+        <h1>UEAS</h1>
+         <div id="usuario"></div>
+         <button onclick="lista_ueas_tabla( )">lista ueas</button>
+         <button onclick="termina_sesion( )">Termina sesión</button>
+         <div id="contenedor-ueas" >
+
+         </div>
+      </div>
+
+      <script src="./scripts/servicios.js"></script>
+   </body>
+</html>
