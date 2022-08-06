@@ -4,7 +4,7 @@
 
 async function lista_profesores(){
     let res = await ajax_post(
-        "scripts/servicios.php", 
+        "scripts/profesores.php", 
         { "servicio": "listar_profesores"},
         1000);
     console.log(res);
@@ -29,7 +29,7 @@ async function actualiza_profesor(profesor = 1, apellidos = 'apellidos test', no
 
 async function crea_profesor(profesor = 1, apellidos = 'Apellido nuevo', nombre = 'Profesor nuevo', email = 'nuevo@azc.uam.mx', departamento = 'CB', notas = 'En revision' ){
     let res = await ajax_post(
-                            "scripts/servicios.php", 
+                            "scripts/profesores.php", 
                             {   "servicio": "crear_profesor", 
                                 "profesor": profesor,
                                 "apellidos": apellidos,

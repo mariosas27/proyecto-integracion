@@ -4,7 +4,7 @@
 
 async function lista_salones(){
     let res = await ajax_post(
-                            "scripts/servicios.php", 
+                            "scripts/salones.php", 
                             { "servicio": "listar_salones"},
                             1000);
     console.log(res);
@@ -26,9 +26,9 @@ async function actualiza_salon(salon = 107, edificio = 'AB', nombre = 'Salon Pru
 }
 
 
-async function crea_salon(edificio = 'AAA', nombre = 'Salon Prueba AAB', aforo100 = 50, aforo75 = 35, aforo50 = 25 ){
+async function crea_salon(edificio = 'ABA', nombre = 'Salon Prueba ABA', aforo100 = 50, aforo75 = 35, aforo50 = 25 ){
     let res = await ajax_post(
-                            "scripts/servicios.php", 
+                            "scripts/salones.php", 
                             {   "servicio": "crear_salon",
                                 "edificio": edificio,
                                 "nombre": nombre,
