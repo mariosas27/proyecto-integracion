@@ -74,7 +74,6 @@
 
     function crear_profesor_impl($conexion, $profesor, $apellidos, $nombre, $email, $departamento, $notas){
         $conexion->query('INSERT IGNORE INTO profesores (profesor, apellidos, nombre, email, departamento, notas) VALUES (?, ?, ?, ?, ?, ?)', $profesor, $apellidos, $nombre, $email, $departamento, $notas);
-        return true;
         return ['estado' => true, 'valor' => $conexion->insert_id];
     
     }
