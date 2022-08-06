@@ -136,6 +136,7 @@
 
     function crear_salon_impl($conexion, $edificio, $nombre, $aforo100, $aforo75, $aforo50){
         $conexion->query('INSERT IGNORE INTO salones (edificio, nombre, aforo100, aforo75, aforo50) VALUES (?, ?, ?, ?, ?)', $edificio, $nombre, $aforo100, $aforo75, $aforo50);
+        return ['estado' => true, 'valor' => $conexion->insert_id];
     }
 
 
@@ -147,5 +148,6 @@
 
     function crear_profesor_impl($conexion, $profesor, $apellidos, $nombre, $email, $departamento, $notas){
         $conexion->query('INSERT IGNORE INTO profesores (profesor, apellidos, nombre, email, departamento, notas) VALUES (?, ?, ?, ?, ?, ?)', $profesor, $apellidos, $nombre, $email, $departamento, $notas);
+        return ['estado' => true, 'valor' => $conexion->insert_id];
     }
 ?>
