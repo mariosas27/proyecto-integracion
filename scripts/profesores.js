@@ -1,5 +1,6 @@
 
 // ----------------------------- PROFESORES -----------------------------
+// los valores por defecto que contienen las funciones solo son colocados para realizar pruebas
 
 async function lista_profesores(){
     let res = await ajax_post(

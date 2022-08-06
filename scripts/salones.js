@@ -1,5 +1,6 @@
 
 // ----------------------------- SALONES -----------------------------
+// los valores por defecto que contienen las funciones solo son colocados para realizar pruebas
 
 async function lista_salones(){
     let res = await ajax_post(
