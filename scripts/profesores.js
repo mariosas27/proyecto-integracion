@@ -42,3 +42,12 @@ async function crea_profesor(profesor = 1, apellidos = 'Apellido nuevo', nombre 
     console.log(res);
 }
 
+async function elimina_profesor(profesor = 1){
+    let res = await ajax_post(
+                            "scripts/profesores.php", 
+                            {   "servicio": "eliminar_profesor",
+                                "profesor": profesor
+                            },
+                            1000);
+    console.log(res);
+}

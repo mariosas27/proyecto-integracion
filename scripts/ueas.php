@@ -24,7 +24,7 @@
    // implementación de casos de uso
  
     function listar_ueas_impl($conexion){
-        $filas = $conexion->query('SELECT * FROM ueas');
+        $filas = $conexion->query('SELECT uea, nombre, horas FROM ueas');
         return ['estado' => true, 'valor' => $filas];
     }
 ?>

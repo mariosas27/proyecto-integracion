@@ -10,7 +10,7 @@ async function lista_salones(){
     console.log(res);
 }
 
-async function actualiza_salon(salon = 107, edificio = 'AB', nombre = 'Salon Prueba', aforo100 = 45, aforo75 = 35, aforo50 = 25 ){
+async function actualiza_salon(salon = 120, edificio = 'AB', nombre = 'Salon Prueba', aforo100 = 45, aforo75 = 35, aforo50 = 25 ){
     let res = await ajax_post(
                             "scripts/salones.php", 
                             {   "servicio": "actualizar_salon",
@@ -26,7 +26,7 @@ async function actualiza_salon(salon = 107, edificio = 'AB', nombre = 'Salon Pru
 }
 
 
-async function crea_salon(edificio = 'ABA', nombre = 'Salon Prueba ABA', aforo100 = 50, aforo75 = 35, aforo50 = 25 ){
+async function crea_salon(edificio = 'ABAB', nombre = 'Salon Prueba ABAB', aforo100 = 50, aforo75 = 35, aforo50 = 25 ){
     let res = await ajax_post(
                             "scripts/salones.php", 
                             {   "servicio": "crear_salon",
@@ -35,6 +35,16 @@ async function crea_salon(edificio = 'ABA', nombre = 'Salon Prueba ABA', aforo10
                                 "aforo100": aforo100, 
                                 "aforo75": aforo75, 
                                 "aforo50": aforo50
+                            },
+                            1000);
+    console.log(res);
+}
+
+async function elimina_salon(salon = 120){
+    let res = await ajax_post(
+                            "scripts/salones.php", 
+                            {   "servicio": "eliminar_salon",
+                                "salon": salon
                             },
                             1000);
     console.log(res);

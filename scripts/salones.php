@@ -41,6 +41,15 @@
             die(json_encode( crear_salon_impl($conexion, $entrada->output('edificio'), $entrada->output('nombre'), $entrada->output('aforo100'), $entrada->output('aforo75'), $entrada->output('aforo50' )  ) ));
         }
 
+        // eliminar salon
+        $entrada = new input();
+        $entrada->validate($_POST, 'servicio', make_filter(match_predicate('eliminar_salon')));
+        $entrada->validate($_POST, 'salon', builtin_filter(FILTER_VALIDATE_INT));
+
+        if($entrada->status( )){
+            die(json_encode( eliminar_salon_impl($conexion, $entrada->output('salon')  ) ));
+        }
+
         die(json_encode([ 'estado' => false, 'valor' => 'error_invocacion' ]));                
     } catch (Exception $ex) {                                                                 
         die(json_encode([ 'estado' => false, 'valor' => 'excepcion', 'mensaje' => $ex->getMessage( ) ]));
@@ -49,7 +58,7 @@
    // implementación de casos de uso
    
     function listar_salones_impl($conexion){
-        $filas = $conexion->query('SELECT * FROM salones');
+        $filas = $conexion->query('SELECT salon, edificio, nombre, aforo100, aforo75, aforo50 FROM salones');
         return ['estado' => true, 'valor' => $filas];
     }
 
@@ -62,4 +71,9 @@
         $conexion->query('INSERT IGNORE INTO salones (edificio, nombre, aforo100, aforo75, aforo50) VALUES (?, ?, ?, ?, ?)', $edificio, $nombre, $aforo100, $aforo75, $aforo50);
         return ($conexion->affected_rows ? ['estado' => true, 'valor' => $conexion->insert_id] : ['estado' => false, 'valor' => 'duplicado']);      
     }
+
+    function eliminar_salon_impl($conexion, $salon){
+        $conexion->query('DELETE FROM salones WHERE salon = ?', $salon);
+        return ($conexion->affected_rows ? ['estado' => true, 'valor' => null] : ['estado' => false, 'valor' => 'inexistente'] );  
+    }  
 ?>

@@ -42,6 +42,15 @@
             die(json_encode( crear_profesor_impl($conexion, $entrada->output('profesor'), $entrada->output('apellidos'), $entrada->output('nombre'), $entrada->output('email'), $entrada->output('departamento'), $entrada->output('notas' )  ) ));
         }
 
+        // eliminar profesor
+        $entrada = new input();
+        $entrada->validate($_POST, 'servicio', make_filter(match_predicate('eliminar_profesor')));
+        $entrada->validate($_POST, 'profesor', builtin_filter(FILTER_VALIDATE_INT));
+
+        if($entrada->status( )){
+            die(json_encode( eliminar_profesor_impl($conexion, $entrada->output('profesor')  ) ));
+        }
+
         die(json_encode([ 'estado' => false, 'valor' => 'error_invocacion' ]));                
     } catch (Exception $ex) {                                                                 
         die(json_encode([ 'estado' => false, 'valor' => 'excepcion', 'mensaje' => $ex->getMessage( ) ]));
@@ -50,7 +59,7 @@
     // implementación de casos de uso
 
     function listar_profesores_impl($conexion){
-        $filas = $conexion->query('SELECT * FROM profesores');
+        $filas = $conexion->query('SELECT profesor, apellidos, nombre, email, departamento, notas FROM profesores');
         return ['estado' => true, 'valor' => $filas];
     }
 
@@ -62,5 +71,11 @@
     function crear_profesor_impl($conexion, $profesor, $apellidos, $nombre, $email, $departamento, $notas){
         $conexion->query('INSERT IGNORE INTO profesores (profesor, apellidos, nombre, email, departamento, notas) VALUES (?, ?, ?, ?, ?, ?)', $profesor, $apellidos, $nombre, $email, $departamento, $notas);
         return ($conexion->affected_rows ? ['estado' => true, 'valor' => $conexion->insert_id] : ['estado' => false, 'valor' => 'duplicado']);      
+    }
+
+    function eliminar_profesor_impl($conexion, $profesor){
+        $conexion->query('DELETE FROM profesores WHERE profesor = ?', $profesor);
+        return ($conexion->affected_rows ? ['estado' => true, 'valor' => null] : ['estado' => false, 'valor' => 'inexistente'] );  
+
     }
 ?>
