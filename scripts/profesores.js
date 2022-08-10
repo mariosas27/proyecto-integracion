@@ -10,7 +10,6 @@ async function lista_profesores(){
     console.log(res);
 }
 
-
 async function actualiza_profesor(profesor = 1, apellidos = 'apellidos test', nombre = 'profesor x', email = 'profesx@azc.uam.mx', departamento = 'CB', notas = 'en proceso' ){
     let res = await ajax_post(
                             "scripts/profesores.php", 
