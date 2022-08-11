@@ -3,7 +3,7 @@
 // los valores por defecto que contienen las funciones solo son colocados para realizar pruebas
 
 async function lista_salones(){
-    let res = await ajax_post(
+    let res = await peticion(ajax_post, 
                             "scripts/salones.php", 
                             { "servicio": "listar_salones"},
                             1000);
@@ -11,7 +11,7 @@ async function lista_salones(){
 }
 
 async function actualiza_salon(salon = 120, edificio = 'AB', nombre = 'Salon Prueba', aforo100 = 45, aforo75 = 35, aforo50 = 25 ){
-    let res = await ajax_post(
+    let res = await peticion(ajax_post, 
                             "scripts/salones.php", 
                             {   "servicio": "actualizar_salon",
                                 "salon": salon, 
@@ -27,7 +27,7 @@ async function actualiza_salon(salon = 120, edificio = 'AB', nombre = 'Salon Pru
 
 
 async function crea_salon(edificio = 'ABAB', nombre = 'Salon Prueba ABAB', aforo100 = 50, aforo75 = 35, aforo50 = 25 ){
-    let res = await ajax_post(
+    let res = await peticion(ajax_post, 
                             "scripts/salones.php", 
                             {   "servicio": "crear_salon",
                                 "edificio": edificio,
@@ -41,7 +41,7 @@ async function crea_salon(edificio = 'ABAB', nombre = 'Salon Prueba ABAB', aforo
 }
 
 async function elimina_salon(salon = 120){
-    let res = await ajax_post(
+    let res = await peticion(ajax_post, 
                             "scripts/salones.php", 
                             {   "servicio": "eliminar_salon",
                                 "salon": salon

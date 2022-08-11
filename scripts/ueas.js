@@ -1,5 +1,5 @@
 async function lista_ueas(){
-    let res = await ajax_post(
+    let res = await peticion(ajax_post, 
                             "scripts/ueas.php", 
                             { "servicio": "listar_ueas"},
                             1000);
