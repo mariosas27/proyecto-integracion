@@ -1,0 +1,220 @@
+<!doctype html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@100;200;300;400;500;600;700;800&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+
+
+      
+      <link rel="stylesheet" href="css/estilo.css">
+      <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+      <script src="./includes/ajax.js" defer></script>
+      <script src="./scripts/ajax_servidor.js" defer></script>
+      <script src="./scripts/sesion.js" defer></script>
+      <script src="./scripts/profesores.js" defer></script>
+      <script src="./scripts/profesores_dom.js" defer></script>
+      <script src="scripts/sidebar.js" defer> </script>
+      <script src="https://accounts.google.com/gsi/client" defer></script>
+      <title>Profesores</title>
+   </head>
+   <body onload="inicia_sesion(null, true)">
+      
+      <div class="visible_autenticado">
+         <div class="sidebar">
+            <div class="logo_detalles">
+               <i class='bx bxs-graduation icon'></i>
+               <div class="logo_nombre">UAM...</div>
+               <i class='bx bx-menu' id="btn" ></i>
+            </div>
+            <ul class="nav_list">
+               <li>
+                  <a href="index.html">
+                  <i class='bx bx-grid-alt'></i>
+                  <span class="links_name">Dashboard</span>
+                  </a>
+                  <span class="tooltip">Dashboard</span>
+               </li>
+               <li>
+                  <a href="profesores.html">
+                     <i class='bx bx-user' ></i>
+                     <span class="links_name">Profesores</span>
+                  </a>
+                  <span class="tooltip">Profesores</span>
+               </li>
+               <li>
+                  <a href="salones.html">
+                     <i class='bx bxs-school'></i>
+                     <span class="links_name">Salones</span>
+                  </a>
+                  <span class="tooltip">Salones</span>
+               </li>
+               <li>
+                  <a href="#">
+                     <i class='bx bx-group' ></i>
+                     <span class="links_name">Grupos</span>
+                  </a>
+                  <span class="tooltip">Grupos</span>
+               </li>
+               
+               <a href="#" onclick="termina_sesion()">
+                    <li class="log_out_contenedor">
+                        <div class="log_out_text">   
+                            Cerrar Sesión
+                        </div>
+                        <i class='bx bx-log-out' id="log_out" ></i>
+                    </li>
+                </a>
+            </ul>
+         </div>
+
+
+         <div class="main_content">
+            <div class="navigation_container">
+               <nav class="navigation">
+                  <h1 class="page_title">Profesores</h1>
+                  <div class="nav_links">
+                     <i class='bx bx-user' ></i>
+                     
+                     <span class="user_name" id="usuario"></span>
+                     <button onclick="termina_sesion()" class="btn btn_blue">Cerrar Sesión</button>
+                  </div>
+               </nav>
+            </div>
+
+            <main class=" contenedor panel ">
+
+                <div class=" contenedor_busqueda">
+                    <div>
+                        <input type="text" placeholder="ingresa..." id="busqueda" onkeyup="filtra()">
+                        <select name="filtro" id="tipo_filtro">
+                            <option value="num_eco">Num. Económico</option>
+                            <option value="nombre">Nombre</option>
+                            <option value="apellidos">Apellidos</option>
+                            <option value="email">email</option>
+                            <option value="departamento">Departamento</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button onclick="muestra_crea_form(event)" class="btn btn_green" id="agrega_profesor">Agregar Profesor</button>
+                        <button onclick="muestra_crea_form(event)" class="btn btn_red no_visible" id="cancelar_agrega_profesor">Cancelar Agregar Profesor</button>
+                    </div>
+                </div>
+                <form class="register_form no_visible" id="register_form">
+                
+                    <h2 class="titulo_form">Agregar profesor</h2>
+                    <label for="num_eco" id="help">Número Económico </label>
+                    <input required type="text" name="num_eco" id="num_eco" placeholder="Ingresa el número económico">
+                
+    
+                
+                    <label for="nombre">Nombre </label>
+                    <input required type="text" name="nombre" id="nombre" placeholder="Ingresa el nombre">
+                
+    
+                
+                    <label for="apellidos">Apellidos </label>
+                    <input required type="text" name="apellidos" id="apellidos"placeholder="Ingresa los apellidos">
+                
+    
+                
+                    <label for="email">Email </label>
+                    <input required type="email" name="email" id="email"placeholder="Ingresa el email">
+                
+    
+                
+                    <label for="dpto">Departamento </label>
+                    <select name="dpto" id="dpto">
+                        <option value="null">No aplica</option>
+                        <option value="CB">Ciencias Básicas</option>
+                        <option value="EL">Electrónica</option>
+                        <option value="EN">Energía</option>
+                        <option value="MA">Materiales</option>
+                        <option value="SI">Sistemas</option>
+                    </select>
+                    
+                    
+    
+                    
+                    <label for="notas">Notas </label>
+                    <input required type="text" name="notas" id="notas" placeholder="Ingresa información sobre notas">
+                    
+                    <div class="submit_form">
+                        <button class="btn btn_blue" onclick="controlador_crea_profesor(event)">Agregar Profesor</button>
+                        <button class="btn btn_red" onclick="muestra_crea_form(event)"  >Cancelar</button>
+                    </div>
+                </form>
+
+
+
+                <div class=" table_container " id="table_container">
+                    <table id="tabla_profesores" class="tabla_info">
+                        <tr class="table_head">
+                            <th>Núm. Económico</th>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Email</th>
+                            <th>Departamento</th>
+                            <th>Notas</th>
+                        </tr>
+                        <tbody id="tabla_body">
+                            
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+                <form class="actualiza_form no_visible" id="actualiza_form">
+                
+                    <h2 class="titulo_form">Actualiza profesor</h2>
+                    <label for="actualiza_num_eco" >Número Económico </label>
+                    <input required type="text" name="actualiza_num_eco" id="actualiza_num_eco" placeholder="Ingresa el número económico">
+                
+    
+                
+                    <label for="actualiza_nombre">Nombre </label>
+                    <input required type="text" name="actualiza_nombre" id="actualiza_nombre" placeholder="Ingresa el nombre">
+                
+    
+                
+                    <label for="actualiza_apellidos">Apellidos </label>
+                    <input required type="text" name="actualiza_apellidos" id="actualiza_apellidos" placeholder="Ingresa los apellidos">
+                
+    
+                
+                    <label for="actualiza_email">Email </label>
+                    <input required type="email" name="actualiza_email" id="actualiza_email" placeholder="Ingresa el email">
+                
+    
+                
+                    <label for="actualiza_dpto">Departamento </label>
+                    <select name="actualiza_dpto" id="actualiza_dpto">
+                        <option value="null">No aplica</option>
+                        <option value="CB">Ciencias Básicas</option>
+                        <option value="EL">Electrónica</option>
+                        <option value="EN">Energía</option>
+                        <option value="MA">Materiales</option>
+                        <option value="SI">Sistemas</option>
+                    </select>
+                    
+                    
+    
+                    
+                    <label for="actualiza_notas">Notas </label>
+                    <input required type="text" name="actualiza_notas" id="actualiza_notas"  placeholder="Ingresa información sobre notas">
+                    
+                    <div class="submit_form">
+                        <button class="btn btn_blue" onclick="controlador_actualiza_profesor(event)">Actualizar Profesor</button>
+                        <button class="btn btn_red" onclick="muestra_actualiza_form(event)" id="cancela_actulizar" >Cancelar</button>
+                    </div>
+                </form>
+            </main>
+         </div>
+      </div>
+      
+   </body>
+</html>
