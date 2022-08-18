@@ -7,7 +7,7 @@ async function lista_salones(){
                             "scripts/salones.php", 
                             { "servicio": "listar_salones"},
                             1000);
-    console.log(res);
+    return res;
 }
 
 async function actualiza_salon(salon = 120, edificio = 'AB', nombre = 'Salon Prueba', aforo100 = 45, aforo75 = 35, aforo50 = 25 ){
@@ -22,7 +22,7 @@ async function actualiza_salon(salon = 120, edificio = 'AB', nombre = 'Salon Pru
                                 "aforo50": aforo50
                             },
                             1000);
-    console.log(res);
+    return res;
 }
 
 
@@ -37,7 +37,7 @@ async function crea_salon(edificio = 'ABAB', nombre = 'Salon Prueba ABAB', aforo
                                 "aforo50": aforo50
                             },
                             1000);
-    console.log(res);
+    return res;
 }
 
 async function elimina_salon(salon = 120){
@@ -47,5 +47,5 @@ async function elimina_salon(salon = 120){
                                 "salon": salon
                             },
                             1000);
-    console.log(res);
+    return res;
 }

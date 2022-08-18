@@ -1,4 +1,5 @@
 
+
 // ----------------------------- PROFESORES -----------------------------
 // los valores por defecto que contienen las funciones solo son colocados para realizar pruebas
 
@@ -7,7 +8,7 @@ async function lista_profesores(){
         "scripts/profesores.php", 
         { "servicio": "listar_profesores"},
         1000);
-    console.log(res);
+    return res;
 }
 
 async function actualiza_profesor(profesor = 1, apellidos = 'apellidos test', nombre = 'profesor x', email = 'profesx@azc.uam.mx', departamento = 'CB', notas = 'en proceso' ){
@@ -22,7 +23,7 @@ async function actualiza_profesor(profesor = 1, apellidos = 'apellidos test', no
                                 "notas": notas
                             },
                             1000);
-    console.log(res);
+    return res;
 }
 
 
@@ -38,7 +39,7 @@ async function crea_profesor(profesor = 1, apellidos = 'Apellido nuevo', nombre 
                                 "notas": notas
                             },
                             1000);
-    console.log(res);
+    return res;
 }
 
 async function elimina_profesor(profesor = 1){
@@ -48,5 +49,6 @@ async function elimina_profesor(profesor = 1){
                                 "profesor": profesor
                             },
                             1000);
-    console.log(res);
+    return res;
 }
+

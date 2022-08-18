@@ -3,63 +3,132 @@
    <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
+      
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">  
+      
+      
       <link rel="stylesheet" href="css/estilo.css">
+      <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
       <script src="./includes/ajax.js" defer></script>
       <script src="./scripts/ajax_servidor.js" defer></script>
-      <script src="./scripts/profesores.js" defer></script>
-      <script src="./scripts/salones.js" defer></script>
       <script src="./scripts/sesion.js" defer></script>
-      <script src="./scripts/ueas.js" defer></script>
+      <script src="scripts/sidebar.js" defer> </script>
       <script src="https://accounts.google.com/gsi/client" defer></script>
       <title>Hola</title>
    </head>
    <body onload="inicia_sesion( )">
-      <div class="visible_no_autenticado">
-         Entra:
-         <div id="g_id_onload" data-client_id="946102343979-9sbkkauvf8k7qeer1g300of8knfnu3pm.apps.googleusercontent.com" data-auto_prompt="false" data-callback="inicia_sesion"></div>
-         <div class="g_id_signin" data-type="standard" data-size="large"></div>
+      <div class="visible_no_autenticado login">
+         <div class="login_contenedor">
+            <p>Inicia Sesión con tu correo institucional</p>
+            <div id="g_id_onload" data-client_id="946102343979-9sbkkauvf8k7qeer1g300of8knfnu3pm.apps.googleusercontent.com" data-auto_prompt="false" data-callback="inicia_sesion"></div>
+            <div class="g_id_signin" data-type="standard" data-size="large"></div>
+         </div>
       </div>
       <div class="visible_autenticado">
-         <div id="usuario"></div>
-         <button onclick="termina_sesion( )">Termina sesión</button>
-         <div>
-            <h1>UEAS</h1>
-            
-            <h2>Listar ueas</h2>
-            <button onclick="lista_ueas( )"> lista ueas </button>
+         <div class="sidebar">
+            <div class="logo_detalles">
+               <i class='bx bxs-graduation icon'></i>
+               <div class="logo_nombre">UAM...</div>
+               <i class='bx bx-menu' id="btn" ></i>
+            </div>
+            <ul class="nav_list">
+               <li>
+                  <a href="index.html">
+                  <i class='bx bx-grid-alt'></i>
+                  <span class="links_name">Dashboard</span>
+                  </a>
+                  <span class="tooltip">Dashboard</span>
+               </li>
+               <li>
+                  <a href="profesores.html">
+                     <i class='bx bx-user' ></i>
+                     <span class="links_name">Profesores</span>
+                  </a>
+                  <span class="tooltip">Profesores</span>
+               </li>
+               <li>
+                  <a href="salones.html">
+                     <i class='bx bxs-school'></i>
+                     <span class="links_name">Salones</span>
+                  </a>
+                  <span class="tooltip">Salones</span>
+               </li>
+               <li>
+                  <a href="#">
+                     <i class='bx bx-group' ></i>
+                     <span class="links_name">Grupos</span>
+                  </a>
+                  <span class="tooltip">Grupos</span>
+               </li>
+               <a href="#" onclick="termina_sesion()">
+                  <li class="log_out_contenedor">
+                     <div class="log_out_text">   
+                        Cerrar Sesión
+                     </div>
+                  <i class='bx bx-log-out' id="log_out" ></i>
+                  </li>
+                </a>
+            </ul>
          </div>
 
-         <div>
-            <h1>SALONES</h1> 
-            
-            <h2>Listar salones</h2>
-            <button onclick="lista_salones( )"> lista salones </button>
-            
-            <h2>Guardar salon </h2>
-            <button onclick="crea_salon()"> Crear salon </button>
 
-            <h2>Actualiza salones</h2>
-            <button onclick="actualiza_salon()"> actualiza salon </button>
+         <div class="main_content">
+            <div class="navigation_container">
+               <nav class="navigation">
+                  <h1 class="page_title">Dashboard</h1>
+                  <div class="nav_links">
+                     <i class='bx bx-user' ></i>
+                     
+                     <span class="user_name" id="usuario"></span>
+                     <a href="#" onclick="termina_sesion()">Cerrar Sesión</a>
+                  </div>
+               </nav>
+            </div>
 
-            <h2>Elimina salón</h2>
-            <button onclick="elimina_salon()"> Elimina salón </button>
-         </div>
-
-         <div>
-            <h1>PROFESORES</h1> 
-
-            <h2>Listar profesores</h2> 
-            <button onclick="lista_profesores()"> lista profesores </button>
-            
-            <h2>Crea profesor</h2>
-            <button onclick="crea_profesor()"> Crear profesor </button>
-
-            <h2>Actualiza profesor </h2>
-            <button onclick="actualiza_profesor()"> Actualiza profesor </button>
-
-            <h2>Elimina profesor </h2>
-            <button onclick="elimina_profesor()"> Elimina profesor </button>
+            <main class="contenedor panel">
+               <div class="opciones">
+                  <div class="opcion">
+                     <div class="opcion_text">
+                        <a href="profesores.html">Profesores</a>
+                     </div>   
+                     <div class="opcion_icon">
+                        <a href="profesores.html"><i class='bx bx-user' ></i></a>
+                     </div>
+                     
+                  </div>
+                  <div class="opcion">
+                     <div class="opcion_text">
+                        <a href="salones.html">Salones</a>
+                     </div>   
+                     <div class="opcion_icon">
+                        <a href="salones.html"><i class='bx bxs-school'></i></a>
+                     </div>
+                     
+                  </div>
+                  <div class="opcion">
+                     <div class="opcion_text">
+                        <a href="#">Grupos</a>                        
+                     </div>   
+                     <div class="opcion_icon">
+                        <a href="#"><i class='bx bx-group' ></i></a>
+                     </div>
+                     
+                  </div>
+                  <div class="opcion">
+                     <div class="opcion_text">
+                        <a href="#">UEAS</a>
+                     </div>   
+                     <div class="opcion_icon">
+                        <a href="#"><i class='bx bx-notepad'></i></a>
+                     </div>
+                     
+                  </div>
+               </div>
+            </main>
          </div>
       </div>
+      
    </body>
 </html>
