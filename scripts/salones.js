@@ -1,51 +1,115 @@
+// =================== rutinas auxiliares de dibujo ====================
 
-// ----------------------------- SALONES -----------------------------
-// los valores por defecto que contienen las funciones solo son colocados para realizar pruebas
-
-async function lista_salones(){
-    let res = await peticion(ajax_post, 
-                            "scripts/salones.php", 
-                            { "servicio": "listar_salones"},
-                            1000);
-    return res;
+function redibuja_salon(tr) {
+   for(let td of tr.childNodes) {
+      if (td.className != null) {
+         td.innerText = tr.salon[td.className];
+      }
+   }
 }
 
-async function actualiza_salon(salon = 120, edificio = 'AB', nombre = 'Salon Prueba', aforo100 = 45, aforo75 = 35, aforo50 = 25 ){
-    let res = await peticion(ajax_post, 
-                            "scripts/salones.php", 
-                            {   "servicio": "actualizar_salon",
-                                "salon": salon, 
-                                "edificio": edificio,
-                                "nombre": nombre,
-                                "aforo100": aforo100, 
-                                "aforo75": aforo75, 
-                                "aforo50": aforo50
-                            },
-                            1000);
-    return res;
+function dibuja_salon(salon) {
+    let tr = document.createElement("tr");
+    tr.id = salon.salon, tr.salon = salon;
+    for(let campo of [ "edificio", "nombre", "aforo100", "aforo75", "aforo50"]){
+        let td = document.createElement("td");
+        td.className = campo;
+        tr.appendChild(td);
+    }
+    redibuja_salon(tr);
+    
+    let btnActualiza = document.createElement("button"), tdActualiza = document.createElement("td");
+    btnActualiza.onclick = ( ) => muestra_actualizacion_salon(tr.salon);
+    btnActualiza.classList.add("bx", "bx-edit-alt","edit_icon");
+    tdActualiza.appendChild(btnActualiza);
+    tr.appendChild(tdActualiza);
+
+    let btnElimina = document.createElement("button"), tdElimina = document.createElement("td");
+    btnElimina.onclick = ( ) => muestra_eliminacion_salon(tr.salon);
+    btnElimina.classList.add("bx", "bx-x-circle","delete_icon");
+    tdElimina.appendChild(btnElimina);
+    tr.appendChild(tdElimina);
+
+    document.getElementById("tabla_salones_cuerpo").appendChild(tr);
 }
 
-
-async function crea_salon(edificio = 'ABAB', nombre = 'Salon Prueba ABAB', aforo100 = 50, aforo75 = 35, aforo50 = 25 ){
-    let res = await peticion(ajax_post, 
-                            "scripts/salones.php", 
-                            {   "servicio": "crear_salon",
-                                "edificio": edificio,
-                                "nombre": nombre,
-                                "aforo100": aforo100, 
-                                "aforo75": aforo75, 
-                                "aforo50": aforo50
-                            },
-                            1000);
-    return res;
+function dibuja_forma(forma, salon = null) {
+    document.getElementById("contenedor_busqueda").classList.add("no_visible");
+    document.getElementById("contenedor_tabla").classList.add("no_visible");
+    forma.classList.remove("no_visible");
+    forma.reset( );
+    for(let campo in (salon ?? { })) {
+       forma[campo].value = salon[campo];
+    }
 }
 
-async function elimina_salon(salon = 120){
-    let res = await peticion(ajax_post, 
-                            "scripts/salones.php", 
-                            {   "servicio": "eliminar_salon",
-                                "salon": salon
-                            },
-                            1000);
-    return res;
+function oculta_forma(forma) {
+    document.getElementById("contenedor_busqueda").classList.remove("no_visible");
+    document.getElementById("contenedor_tabla").classList.remove("no_visible");
+    forma.classList.add("no_visible");
+}
+
+// =================== consultar, agregar, actualizar y eliminar ====================
+
+async function muestra_salones( ) {
+    for(let salon of await lista_salones( )){
+       dibuja_salon(salon);
+    }
+}
+
+function muestra_creacion_salon( ) {
+    dibuja_forma(document.getElementById("forma_creacion"));
+}
+
+function muestra_actualizacion_salon(salon) {
+    dibuja_forma(document.getElementById("forma_actualizacion"), salon);
+}
+
+function muestra_eliminacion_salon(salon) {
+    if (confirm(`¿Está seguro de eliminar el salón ${salon.nombre}?`)) {
+       ejecuta_eliminacion_salon(salon);
+    }
+}
+
+function cancela_creacion_salon( ) {
+    oculta_forma(document.getElementById("forma_creacion"));
+}
+
+function cancela_actualizacion_salon(salon) {
+    oculta_forma(document.getElementById("forma_actualizacion"));
+}
+
+async function ejecuta_creacion_salon(forma) {
+   if (forma.reportValidity( )) {
+      let datos = Object.fromEntries((new FormData(forma)).entries( ));
+      let salon = Object.assign({ "salon": await crea_salon(datos.edificio, datos.nombre, datos.aforo100, datos.aforo75, datos.aforo50) }, datos);
+      alert("Se agregó el salón exitosamente.");
+      cancela_creacion_salon( );
+      dibuja_salon(salon);
+   }
+}
+
+async function ejecuta_actualizacion_salon(forma) {
+   if (forma.reportValidity( )) {
+      let datos = Object.fromEntries((new FormData(forma)).entries( ));
+      await actualiza_salon(datos.salon, datos.edificio, datos.nombre, datos.aforo100, datos.aforo75, datos.aforo50);
+      alert("Se actualizó el salón exitosamente.");
+      let tr = document.getElementById(datos.salon);
+      tr.salon = datos, redibuja_salon(tr);
+   }
+}
+
+async function ejecuta_eliminacion_salon(salon) {
+    await elimina_salon(salon.salon);
+    alert("Se eliminó el salón exitosamente.");
+    document.getElementById(salon.salon).remove( );
+}
+
+// =================== buscar ====================
+
+function filtra_salones( ) {
+    let valor = document.getElementById("busqueda").value.replace(/\s+/, " ").toUpperCase( ), tipo = document.getElementById("tipo_filtro").value;
+    for (let td of document.getElementById("tabla_salones_cuerpo").getElementsByClassName(tipo)) {
+       td.parentNode.style.display = (td.innerText.toUpperCase( ).includes(valor) ? "" : "none");      
+    }
 }

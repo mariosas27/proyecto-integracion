@@ -1,24 +1,28 @@
 function ajax_formdata(parametros) {
-   let res = new FormData( );
-   for (let nombre in parametros) {
-      res.append(nombre, (typeof(parametros[nombre]) == 'object' ? JSON.stringify(parametros[nombre]) : parametros[nombre]));
+   if (parametros instanceof HTMLFormElement) {
+      return new FormData(parametros);
+   } else {
+      let res = new FormData( );
+      for (let nombre in parametros) {
+         res.append(nombre, (typeof(parametros[nombre]) == 'object' ? JSON.stringify(parametros[nombre]) : parametros[nombre]));
+      }
+      return res;
    }
-   return res;
 }
 
-function ajax_get(url, timeout, parse = true, progreso = null) {
+function ajax_get(url, timeout, parse = true, cb_progreso = null) {
    let ajax = new XMLHttpRequest( );
    ajax.open("GET", url);
-   return ajax_send(ajax, null, timeout, parse, progreso);
+   return ajax_send(ajax, null, timeout, parse, cb_progreso);
 }
 
-function ajax_post(url, parametros, timeout, parse = true, progreso = null) {
+function ajax_post(url, parametros, timeout, parse = true, cb_progreso = null) {
    let ajax = new XMLHttpRequest( );
    ajax.open("POST", url);
-   return ajax_send(ajax, ajax_formdata(parametros), timeout, parse, progreso);
+   return ajax_send(ajax, ajax_formdata(parametros), timeout, parse, cb_progreso);
 }
 
-function ajax_send(ajax, parametros, timeout, parse = true, progreso = null) {
+function ajax_send(ajax, parametros, timeout, parse = true, cb_progreso = null) {
    return new Promise(function(resolver) {
       ajax.timeout = timeout;
       ajax.onload = ( ) => {
@@ -45,9 +49,9 @@ function ajax_send(ajax, parametros, timeout, parse = true, progreso = null) {
       ajax.ontimeout = ( ) => {
          resolver(new Error("timeout"));
       };
-      if (progreso != null) {
+      if (cb_progreso != null) {
          ajax.onprogress = (evento) => {
-            progreso(evento.loaded, evento.total);
+            cb_progreso(evento.loaded, evento.total);
          }
       }
       ajax.send(parametros);

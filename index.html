@@ -4,19 +4,18 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       
+      <link rel="stylesheet" href="css/estilo.css">
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">  
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@100;200;300;400;500;600;700;800&family=Roboto:wght@100;300;400;500;700;900&display=swap">
+      <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" >
       
-      
-      <link rel="stylesheet" href="css/estilo.css">
-      <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
       <script src="./includes/ajax.js" defer></script>
-      <script src="./scripts/ajax_servidor.js" defer></script>
+      <script src="./scripts/servidor.js" defer></script>
       <script src="./scripts/sesion.js" defer></script>
-      <script src="scripts/sidebar.js" defer> </script>
+      <script src="./scripts/sidebar.js" defer></script>
       <script src="https://accounts.google.com/gsi/client" defer></script>
-      <title>Hola</title>
+      <title>Sistema</title>
    </head>
    <body onload="inicia_sesion( )">
       <div class="visible_no_autenticado login">
@@ -29,58 +28,56 @@
       <div class="visible_autenticado">
          <div class="sidebar">
             <div class="logo_detalles">
-               <i class='bx bxs-graduation icon'></i>
+               <i class="bx bxs-graduation icon"></i>
                <div class="logo_nombre">UAM...</div>
-               <i class='bx bx-menu' id="btn" ></i>
+               <i class="bx bx-menu" id="btn" ></i>
             </div>
             <ul class="nav_list">
                <li>
                   <a href="index.html">
-                  <i class='bx bx-grid-alt'></i>
-                  <span class="links_name">Dashboard</span>
+                  <i class="bx bx-grid-alt"></i>
+                  <span class="links_name">Panel</span>
                   </a>
-                  <span class="tooltip">Dashboard</span>
+                  <span class="tooltip">Panel</span>
                </li>
                <li>
                   <a href="profesores.html">
-                     <i class='bx bx-user' ></i>
+                     <i class="bx bx-user" ></i>
                      <span class="links_name">Profesores</span>
                   </a>
                   <span class="tooltip">Profesores</span>
                </li>
                <li>
                   <a href="salones.html">
-                     <i class='bx bxs-school'></i>
+                     <i class="bx bxs-school"></i>
                      <span class="links_name">Salones</span>
                   </a>
                   <span class="tooltip">Salones</span>
                </li>
                <li>
                   <a href="#">
-                     <i class='bx bx-group' ></i>
+                     <i class="bx bx-group" ></i>
                      <span class="links_name">Grupos</span>
                   </a>
                   <span class="tooltip">Grupos</span>
                </li>
-               <a href="#" onclick="termina_sesion()">
-                  <li class="log_out_contenedor">
-                     <div class="log_out_text">   
-                        Cerrar Sesión
-                     </div>
-                  <i class='bx bx-log-out' id="log_out" ></i>
-                  </li>
-                </a>
+               <li class="log_out_contenedor">
+                   <a href="#" onclick="termina_sesion()">
+                       <div class="log_out_text">   
+                           Cerrar Sesión
+                       </div>
+                       <i class="bx bx-log-out" id="log_out" ></i>
+                   </a>
+               </li>
             </ul>
          </div>
-
 
          <div class="main_content">
             <div class="navigation_container">
                <nav class="navigation">
-                  <h1 class="page_title">Dashboard</h1>
+                  <h1 class="page_title">Panel</h1>
                   <div class="nav_links">
-                     <i class='bx bx-user' ></i>
-                     
+                     <i class="bx bx-user" ></i>
                      <span class="user_name" id="usuario"></span>
                      <a href="#" onclick="termina_sesion()">Cerrar Sesión</a>
                   </div>
@@ -94,36 +91,35 @@
                         <a href="profesores.html">Profesores</a>
                      </div>   
                      <div class="opcion_icon">
-                        <a href="profesores.html"><i class='bx bx-user' ></i></a>
+                        <a href="profesores.html"><i class="bx bx-user" ></i></a>
                      </div>
-                     
                   </div>
+                  
                   <div class="opcion">
                      <div class="opcion_text">
                         <a href="salones.html">Salones</a>
                      </div>   
                      <div class="opcion_icon">
-                        <a href="salones.html"><i class='bx bxs-school'></i></a>
+                        <a href="salones.html"><i class="bx bxs-school"></i></a>
                      </div>
-                     
                   </div>
+                  
                   <div class="opcion">
                      <div class="opcion_text">
                         <a href="#">Grupos</a>                        
                      </div>   
                      <div class="opcion_icon">
-                        <a href="#"><i class='bx bx-group' ></i></a>
+                        <a href="#"><i class="bx bx-group" ></i></a>
                      </div>
-                     
                   </div>
+                  
                   <div class="opcion">
                      <div class="opcion_text">
                         <a href="#">UEAS</a>
                      </div>   
                      <div class="opcion_icon">
-                        <a href="#"><i class='bx bx-notepad'></i></a>
+                        <a href="#"><i class="bx bx-notepad"></i></a>
                      </div>
-                     
                   </div>
                </div>
             </main>
