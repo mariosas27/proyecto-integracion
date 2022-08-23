@@ -490,6 +490,11 @@ input:focus{
    border: none;
 }
 
+input[readonly] {
+   background-color: #E6E6E6;
+   color: #777777;
+}
+
 select{
    height: 35px;
    width: 400px;
