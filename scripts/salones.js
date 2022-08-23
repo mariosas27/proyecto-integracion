@@ -96,6 +96,7 @@ async function ejecuta_actualizacion_salon(forma) {
       alert("Se actualizó el salón exitosamente.");
       let tr = document.getElementById(datos.salon);
       tr.salon = datos, redibuja_salon(tr);
+      cancela_actualizacion_salon();
    }
 }
 

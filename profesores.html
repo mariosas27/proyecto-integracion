@@ -4,25 +4,20 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       
+      <link rel="stylesheet" href="css/estilo.css">
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@100;200;300;400;500;600;700;800&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
-
-
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@100;200;300;400;500;600;700;800&family=Roboto:wght@100;300;400;500;700;900&display=swap">
+      <link rel="stylesheet" href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' >
       
-      <link rel="stylesheet" href="css/estilo.css">
-      <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
       <script src="./includes/ajax.js" defer></script>
-      <script src="./scripts/ajax_servidor.js" defer></script>
+      <script src="./scripts/servidor.js" defer></script>
       <script src="./scripts/sesion.js" defer></script>
+      <script src="./scripts/sidebar.js" defer></script>
       <script src="./scripts/profesores.js" defer></script>
-      <script src="./scripts/profesores_dom.js" defer></script>
-      <script src="scripts/sidebar.js" defer> </script>
-      <script src="https://accounts.google.com/gsi/client" defer></script>
       <title>Profesores</title>
    </head>
-   <body onload="inicia_sesion(null, true)">
-      
+   <body onload="inicia_sesion(null, true), muestra_profesores( )">
       <div class="visible_autenticado">
          <div class="sidebar">
             <div class="logo_detalles">
@@ -34,9 +29,9 @@
                <li>
                   <a href="index.html">
                   <i class='bx bx-grid-alt'></i>
-                  <span class="links_name">Dashboard</span>
+                  <span class="links_name">Panel</span>
                   </a>
-                  <span class="tooltip">Dashboard</span>
+                  <span class="tooltip">Panel</span>
                </li>
                <li>
                   <a href="profesores.html">
@@ -59,18 +54,23 @@
                   </a>
                   <span class="tooltip">Grupos</span>
                </li>
-               
-               <a href="#" onclick="termina_sesion()">
-                    <li class="log_out_contenedor">
-                        <div class="log_out_text">   
-                            Cerrar Sesión
-                        </div>
-                        <i class='bx bx-log-out' id="log_out" ></i>
-                    </li>
-                </a>
+               <li>
+                  <a href="ueas.html">
+                     <i class="bx bx-notepad" ></i>
+                     <span class="links_name">UEAS</span>
+                  </a>
+                  <span class="tooltip">UEAS</span>
+               </li>
+               <li class="log_out_contenedor">
+                   <a href="#" onclick="termina_sesion()">
+                       <div class="log_out_text">   
+                           Cerrar Sesión
+                       </div>
+                       <i class='bx bx-log-out' id="log_out" ></i>
+                   </a>
+               </li>
             </ul>
          </div>
-
 
          <div class="main_content">
             <div class="navigation_container">
@@ -78,121 +78,60 @@
                   <h1 class="page_title">Profesores</h1>
                   <div class="nav_links">
                      <i class='bx bx-user' ></i>
-                     
                      <span class="user_name" id="usuario"></span>
                      <button onclick="termina_sesion()" class="btn btn_blue">Cerrar Sesión</button>
                   </div>
                </nav>
             </div>
 
-            <main class=" contenedor panel ">
-
-                <div class=" contenedor_busqueda">
+            <main class="contenedor panel">
+                <div class="contenedor_busqueda" id="contenedor_busqueda">
                     <div>
-                        <input type="text" placeholder="ingresa..." id="busqueda" onkeyup="filtra()">
-                        <select name="filtro" id="tipo_filtro">
-                            <option value="num_eco">Num. Económico</option>
+                        <input type="text" placeholder="Ingresa el valor a buscar..." id="busqueda" onkeyup="filtra_profesores( )">
+                        <select name="filtro" id="tipo_filtro" onchange="filtra_profesores( )">
+                            <option value="profesor">Num. Económico</option>
                             <option value="nombre">Nombre</option>
                             <option value="apellidos">Apellidos</option>
-                            <option value="email">email</option>
+                            <option value="email">Email</option>
                             <option value="departamento">Departamento</option>
                         </select>
                     </div>
                     <div>
-                        <button onclick="muestra_crea_form(event)" class="btn btn_green" id="agrega_profesor">Agregar Profesor</button>
-                        <button onclick="muestra_crea_form(event)" class="btn btn_red no_visible" id="cancelar_agrega_profesor">Cancelar Agregar Profesor</button>
+                        <button type="button" onclick="muestra_creacion_profesor( )" class="btn btn_green">Agregar Profesor</button>
                     </div>
                 </div>
-                <form class="register_form no_visible" id="register_form">
-                
-                    <h2 class="titulo_form">Agregar profesor</h2>
-                    <label for="num_eco" id="help">Número Económico </label>
-                    <input required type="text" name="num_eco" id="num_eco" placeholder="Ingresa el número económico">
-                
-    
-                
-                    <label for="nombre">Nombre </label>
-                    <input required type="text" name="nombre" id="nombre" placeholder="Ingresa el nombre">
-                
-    
-                
-                    <label for="apellidos">Apellidos </label>
-                    <input required type="text" name="apellidos" id="apellidos"placeholder="Ingresa los apellidos">
-                
-    
-                
-                    <label for="email">Email </label>
-                    <input required type="email" name="email" id="email"placeholder="Ingresa el email">
-                
-    
-                
-                    <label for="dpto">Departamento </label>
-                    <select name="dpto" id="dpto">
-                        <option value="null">No aplica</option>
-                        <option value="CB">Ciencias Básicas</option>
-                        <option value="EL">Electrónica</option>
-                        <option value="EN">Energía</option>
-                        <option value="MA">Materiales</option>
-                        <option value="SI">Sistemas</option>
-                    </select>
-                    
-                    
-    
-                    
-                    <label for="notas">Notas </label>
-                    <input required type="text" name="notas" id="notas" placeholder="Ingresa información sobre notas">
-                    
-                    <div class="submit_form">
-                        <button class="btn btn_blue" onclick="controlador_crea_profesor(event)">Agregar Profesor</button>
-                        <button class="btn btn_red" onclick="muestra_crea_form(event)"  >Cancelar</button>
-                    </div>
-                </form>
 
-
-
-                <div class=" table_container " id="table_container">
-                    <table id="tabla_profesores" class="tabla_info">
+                <div class="contenedor_tabla" id="contenedor_tabla">
+                    <table class="tabla_info" id="tabla_profesores">
                         <tr class="tabla_head">
-                            <th>Núm. Económico</th>
-                            <th>Nombre</th>
+                           <th>Número Económico</th> 
+                           <th>Nombre</th>
                             <th>Apellidos</th>
                             <th>Email</th>
                             <th>Departamento</th>
                             <th>Notas</th>
                         </tr>
-                        <tbody id="tabla_body">
-                            
-                        </tbody>
+                        <tbody id="tabla_profesores_cuerpo"></tbody>
                     </table>
                 </div>
 
+                <form class="no_visible" id="forma_creacion">
+                    <h2 class="titulo_form">Agregar Profesor</h2>
+                    
+                    <label for="profesor">Número Económico </label>
+                    <input required type="text" pattern=".+" name="profesor" placeholder="Ingresa el número económico">
 
+                    <label for="apellidos">Apellidos </label>
+                    <input required type="text" pattern=".+" name="apellidos" placeholder="Ingresa los apellidos">
+                
+                    <label for="nombre">Nombre </label>
+                    <input required type="text" pattern=".+" name="nombre" placeholder="Ingresa el nombre">
 
-                <form class="actualiza_form no_visible" id="actualiza_form">
+                    <label for="email">Email </label>
+                    <input required type="email" pattern=".+" name="email" placeholder="Ingresa el email">
                 
-                    <h2 class="titulo_form">Actualiza profesor</h2>
-                    <label for="actualiza_num_eco" >Número Económico </label>
-                    <input required type="text" name="actualiza_num_eco" id="actualiza_num_eco" placeholder="Ingresa el número económico">
-                
-    
-                
-                    <label for="actualiza_nombre">Nombre </label>
-                    <input required type="text" name="actualiza_nombre" id="actualiza_nombre" placeholder="Ingresa el nombre">
-                
-    
-                
-                    <label for="actualiza_apellidos">Apellidos </label>
-                    <input required type="text" name="actualiza_apellidos" id="actualiza_apellidos" placeholder="Ingresa los apellidos">
-                
-    
-                
-                    <label for="actualiza_email">Email </label>
-                    <input required type="email" name="actualiza_email" id="actualiza_email" placeholder="Ingresa el email">
-                
-    
-                
-                    <label for="actualiza_dpto">Departamento </label>
-                    <select name="actualiza_dpto" id="actualiza_dpto">
+                    <label for="departamento">Departamento </label>
+                    <select name="departamento">
                         <option value="null">No aplica</option>
                         <option value="CB">Ciencias Básicas</option>
                         <option value="EL">Electrónica</option>
@@ -200,21 +139,51 @@
                         <option value="MA">Materiales</option>
                         <option value="SI">Sistemas</option>
                     </select>
-                    
-                    
-    
-                    
-                    <label for="actualiza_notas">Notas </label>
-                    <input required type="text" name="actualiza_notas" id="actualiza_notas"  placeholder="Ingresa información sobre notas">
+
+                    <label for="notas">Notas </label>
+                    <input required type="text" pattern=".+" name="notas" placeholder="Ingresa notas">
                     
                     <div class="submit_form">
-                        <button class="btn btn_blue" onclick="controlador_actualiza_profesor(event)">Actualizar Profesor</button>
-                        <button class="btn btn_red" onclick="muestra_actualiza_form(event)" id="cancela_actulizar" >Cancelar</button>
+                        <button type="button" class="btn btn_blue" onclick="ejecuta_creacion_profesor(this.form)">Agregar Profesor</button>
+                        <button type="button" class="btn btn_red" onclick="cancela_creacion_profesor( )">Cancelar</button>
+                    </div>
+                </form>
+
+                <form class="no_visible" id="forma_actualizacion">
+                    <h2 class="titulo_form">Actualiza Salón</h2>
+                    
+                    <label for="profesor">Número Económico </label>
+                    <input required type="text" pattern=".+" name="profesor" placeholder="Ingresa el número económico">
+
+                    <label for="apellidos">Apellidos </label>
+                    <input required type="text" pattern=".+" name="apellidos" placeholder="Ingresa los apellidos">
+                
+                    <label for="nombre">Nombre </label>
+                    <input required type="text" pattern=".+" name="nombre" placeholder="Ingresa el nombre">
+
+                    <label for="email">Email </label>
+                    <input required type="email" pattern=".+" name="email" placeholder="Ingresa el email">
+                
+                    <label for="departamento">Departamento </label>
+                    <select name="departamento">
+                        <option value="null">No aplica</option>
+                        <option value="CB">Ciencias Básicas</option>
+                        <option value="EL">Electrónica</option>
+                        <option value="EN">Energía</option>
+                        <option value="MA">Materiales</option>
+                        <option value="SI">Sistemas</option>
+                    </select>
+
+                    <label for="notas">Notas </label>
+                    <input required type="text" pattern=".+" name="notas" placeholder="Ingresa notas">
+                    
+                    <div class="submit_form">
+                        <button type="button" class="btn btn_blue" onclick="ejecuta_actualizacion_profesor(this.form)">Actualizar Profesor</button>
+                        <button type="button" class="btn btn_red" onclick="cancela_actualizacion_profesor( )" >Cancelar</button>
                     </div>
                 </form>
             </main>
          </div>
       </div>
-      
    </body>
 </html>
