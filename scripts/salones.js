@@ -2,7 +2,7 @@
 
 function redibuja_salon(tr) {
    for(let td of tr.childNodes) {
-      if (td.className != null && tr.salon[td.className] !== undefined) {
+      if (td.className != "") {
          td.innerText = tr.salon[td.className];
       }
    }
