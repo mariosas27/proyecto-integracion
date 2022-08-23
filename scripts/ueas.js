@@ -2,7 +2,7 @@
 
 function redibuja_uea(tr) {
     for(let td of tr.childNodes) {
-       if (td.className != null && tr.uea[td.className] !== undefined) {
+       if (td.className != "") {
           td.innerText = tr.uea[td.className];
        }
     }

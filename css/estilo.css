@@ -310,20 +310,16 @@ body {
    padding: 20px 30px;
    display: flex;
    justify-content: space-between;
-
+   
+   text-decoration: none;
+   color: #000;
+   font-weight: 700;
+   font-size: 20px;
 }
 
 .opcion:hover{
    transition: all 0.6s ease;
    box-shadow: 10px 10px 5px -3px rgba(0,0,0,0.1);
-}
-
-.opcion_text a{
-   text-decoration: none;
-   color: #000;
-   font-weight: 700;
-   font-size: 20px;
-   
 }
 
 .opcion_icon{

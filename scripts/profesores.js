@@ -2,7 +2,7 @@
 
 function redibuja_profesor(tr) {
     for(let td of tr.childNodes) {
-       if (td.className != null && tr.profesor[td.className] !== undefined) {
+       if (td.className != "") {
           td.innerText = tr.profesor[td.className];
        }
     }
