@@ -2,8 +2,8 @@
 
 function redibuja_salon(tr) {
    for(let td of tr.childNodes) {
-      if (td.campo != null) {
-         td.innerText = tr.salon[td.campo];
+      if (td.className != null && tr.salon[td.className] !== undefined) {
+         td.innerText = tr.salon[td.className];
       }
    }
 }
@@ -13,7 +13,7 @@ function dibuja_salon(salon) {
     tr.id = salon.salon, tr.salon = salon;
     for(let campo of [ "edificio", "nombre", "aforo100", "aforo75", "aforo50"]){
         let td = document.createElement("td");
-        td.campo = campo;
+        td.className = campo;
         tr.appendChild(td);
     }
     redibuja_salon(tr);
