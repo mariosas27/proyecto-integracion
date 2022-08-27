@@ -119,3 +119,52 @@ async function elimina_salon(salon){
 async function lista_ueas(){
     return await peticion(ajax_post, "scripts/ueas.php", { "servicio": "listar_ueas" }, 1000);
 }
+
+//grupos
+
+async function lista_grupos(){
+   let res =  await peticion(ajax_post, "scripts/grupos.php", { "servicio": "listar_grupos" }, 1000);
+   console.log(res);
+}
+
+async function crea_grupo(grupo_uea = 1151039, grupo_clave = 'CAT34', grupo_evaluacion = 1){
+   let incorrecto = [{nombre: 'mario', apellidos: 'Sastre'}, {nombre: 'juan', apellidos: 'cuahutle'}];
+
+   let horarios = [
+      {
+         salon: 1, 
+         dia: 'LU',
+         inicio: '07:00:00', 
+         termino: '08:30:00'
+      },
+      {
+         salon: 1, 
+         dia: 'MI',
+         inicio: '07:00:00', 
+         termino: '08:30:00'
+      },
+      {
+         salon: 1, 
+         dia: 'VI',
+         inicio: '07:00:00', 
+         termino: '08:30:00'
+      }
+   ];
+
+   let profesores_grupo = [ 8, 33 ]; //únicamente van los id de los profesores
+   let res =  await peticion(ajax_post, "scripts/grupos.php", { 
+      "servicio": "crear_grupo",
+      "grupo_uea": grupo_uea, 
+      "grupo_clave": grupo_clave, 
+      "grupo_evaluacion": grupo_evaluacion,
+      "profesores_grupo": profesores_grupo,
+      "horarios_grupo": horarios
+   }, 2000);
+
+   console.log(res);
+}
+
+async function elimina_grupo(grupo = 61){
+   let res =  await peticion(ajax_post, "scripts/grupos.php", { "servicio": "eliminar_grupo", "grupo": grupo }, 5000);
+   console.log(res);
+}
