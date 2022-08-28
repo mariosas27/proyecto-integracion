@@ -168,3 +168,35 @@ async function elimina_grupo(grupo = 61){
    let res =  await peticion(ajax_post, "scripts/grupos.php", { "servicio": "eliminar_grupo", "grupo": grupo }, 5000);
    console.log(res);
 }
+
+async function actualiza_grupo(grupo = 60, grupo_uea = 1121040, grupo_clave = 'CAT30', grupo_evaluacion = 1){
+   let incorrecto = [{nombre: 'mario', apellidos: 'Sastre'}, {nombre: 'juan', apellidos: 'cuahutle'}];
+
+   let horarios = [
+      {
+         salon: 1, 
+         dia: 'MA',
+         inicio: '07:00:00', 
+         termino: '08:30:00'
+      },
+      {
+         salon: 1, 
+         dia: 'JU',
+         inicio: '07:00:00', 
+         termino: '08:30:00'
+      }
+   ];
+
+   let profesores_grupo = [ 1, 8 ]; //únicamente van los id de los profesores
+   let res =  await peticion(ajax_post, "scripts/grupos.php", { 
+      "servicio": "actualizar_grupo",
+      "grupo": grupo,
+      "grupo_uea": grupo_uea, 
+      "grupo_clave": grupo_clave, 
+      "grupo_evaluacion": grupo_evaluacion,
+      "profesores_grupo": profesores_grupo,
+      "horarios_grupo": horarios
+   }, 3000);
+
+   console.log(res);
+}

@@ -18,15 +18,18 @@
 
         // actualizar salon
         $entrada = new input();
-        $entrada->validate($_POST, 'servicio', make_filter(match_predicate('actualizar_salon')));
-        $entrada->validate($_POST, 'salon', builtin_filter(FILTER_VALIDATE_INT));
-        $entrada->validate($_POST, 'edificio', make_filter('is_string'));
-        $entrada->validate($_POST, 'nombre', make_filter('is_string'));
-        $entrada->validate($_POST, 'aforo100', builtin_filter(FILTER_VALIDATE_INT));
-        $entrada->validate($_POST, 'aforo75', builtin_filter(FILTER_VALIDATE_INT));
-        $entrada->validate($_POST, 'aforo50', builtin_filter(FILTER_VALIDATE_INT));
+        $entrada->validate($_POST, 'servicio', make_filter(match_predicate('actualizar_grupo')));
+        $entrada->validate($_POST, 'grupo', builtin_filter(FILTER_VALIDATE_INT));
+        //para la tabla de grupos
+        $entrada->validate($_POST, 'grupo_uea', builtin_filter(FILTER_VALIDATE_INT));
+        $entrada->validate($_POST, 'grupo_clave', make_filter('is_string'));
+        $entrada->validate($_POST, 'grupo_evaluacion', builtin_filter(FILTER_VALIDATE_INT));
+        //para la tabla profesores_grupo
+        $entrada->validate($_POST, 'profesores_grupo', json_filter('filtro_arreglo_profesores'));
+        //para la tabla horarios_grupo
+        $entrada->validate($_POST, 'horarios_grupo', json_filter('filtro_arreglo_horarios'));
         if($entrada->status( )){
-            die(json_encode( actualizar_salon_impl($conexion, $entrada->output('salon'), $entrada->output('edificio'), $entrada->output('nombre'), $entrada->output('aforo100'), $entrada->output('aforo75'), $entrada->output('aforo50' )  ) ));
+            die(json_encode( actualizar_grupo_impl($conexion, $entrada->output('grupo') ,$entrada->output('grupo_uea'), $entrada->output('grupo_clave'), $entrada->output('grupo_evaluacion'), $entrada->output('profesores_grupo' ), $entrada->output('horarios_grupo')  ) ));
         }
 
         // crear/insertar grupo
@@ -93,10 +96,27 @@
         return ($conexion->affected_rows ? ['estado' => true, 'valor' => null] : ['estado' => false, 'valor' => 'inexistente'] );  
     } 
 
-    function actualizar_salon_impl($conexion, $salon, $edificio, $nombre, $aforo100, $aforo75, $aforo50){
-        $conexion->query('UPDATE salones SET edificio = ?, nombre = ?, aforo100 = ?, aforo75 = ?, aforo50 = ? WHERE salon = ?', $edificio, $nombre, $aforo100, $aforo75, $aforo50, $salon);
-        return ($conexion->affected_rows ? ['estado' => true, 'valor' => null] : ['estado' => false, 'valor' => 'inexistente'] );  
-    } 
+    function actualizar_grupo_impl($conexion, $grupo, $grupo_uea, $grupo_clave, $grupo_evaluacion, $profesores_grupo, $horarios_grupo){
+        // actualizamos la tabla grupo
+        $conexion->query('UPDATE grupos SET uea = ?, clave = ?, evaluacion = ? WHERE grupo = ?', $grupo_uea, $grupo_clave, $grupo_evaluacion, $grupo);
+        if(!$conexion->affected_rows){
+            return ['estado' => false, 'valor' => 'inexistente'];
+        }
+        //eliminamos los las filas de la tabla profesores_grupos que establecen una relación entre un profesor y el grupo a actualizar, lo mismo para horarios_grupos
+        $conexion->query('DELETE FROM horarios_grupo WHERE grupo = ?', $grupo);
+        $conexion->query('DELETE FROM profesores_grupo WHERE grupo = ?', $grupo);
+        //insertamos la nueva info en la tabla profesores_grupo        
+        foreach($profesores_grupo as $id_profesor){
+            $conexion->query('INSERT IGNORE INTO profesores_grupo (grupo, profesor) VALUES (?, ?)', $grupo, $id_profesor);
+        }
+        // Insertamos la nueva info en la tabla horario_grupo 
+        foreach($horarios_grupo as $horario){
+            $conexion->query('INSERT IGNORE INTO horarios_grupo (grupo, salon, dia, inicio, termino) VALUES (?, ?, ?, ?, ?)', $grupo, $horario['salon'], $horario['dia'], $horario['inicio'], $horario['termino']);
+        }
+        return ['estado' => true, 'valor' => $grupo];
+    }
+    
+
 
     function filtro_arreglo_horarios($horarios) {         // debe regresar el arreglo validado o nulo si estaba mal
         if (is_array($horarios)) {
