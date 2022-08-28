@@ -127,6 +127,8 @@ async function lista_grupos(){
    console.log(res);
 }
 
+//solo como comentario, creé una evaluación en la tabla de evaluaciones, es la que estoy usando en las funciones de abajo, solo faltaría ver cómo se crearían las evaluaciones.
+
 async function crea_grupo(grupo_uea = 1151039, grupo_clave = 'CAT34', grupo_evaluacion = 1){
    let incorrecto = [{nombre: 'mario', apellidos: 'Sastre'}, {nombre: 'juan', apellidos: 'cuahutle'}];
 
