@@ -8,7 +8,7 @@
 
    try {
       date_default_timezone_set('America/Mexico_City');
-      session_start( );
+      session_name('programacion_grupos'); session_start( );
       $conexion = new db_access(HOST_DB, USER_DB, PASSWORD_DB, DATABASE_DB);
 
       $entrada = new input( );

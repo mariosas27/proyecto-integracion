@@ -123,44 +123,41 @@ async function lista_ueas(){
 //grupos
 
 async function lista_grupos(){
-   let res =  await peticion(ajax_post, "scripts/grupos.php", { "servicio": "listar_grupos" }, 1000);
+   let res =  await peticion(ajax_post, "scripts/grupos.php", { "servicio": "listar_grupos", "evaluacion": 1 }, 1000);
    console.log(res);
 }
 
-//solo como comentario, creé una evaluación en la tabla de evaluaciones, es la que estoy usando en las funciones de abajo, solo faltaría ver cómo se crearían las evaluaciones.
-
-async function crea_grupo(grupo_uea = 1151039, grupo_clave = 'CAT34', grupo_evaluacion = 1){
-   let incorrecto = [{nombre: 'mario', apellidos: 'Sastre'}, {nombre: 'juan', apellidos: 'cuahutle'}];
-
+async function crea_grupo(uea = 1151039, clave = 'CAT34', evaluacion = 1){
+   let temp = [{nombre: 'mario', apellidos: 'Sastre'}, {nombre: 'juan', apellidos: 'cuahutle'}];
    let horarios = [
       {
-         salon: 1, 
+         salon: 10, 
          dia: 'LU',
-         inicio: '07:00:00', 
-         termino: '08:30:00'
+         inicio: '07:00', 
+         termino: '08:30'
       },
       {
-         salon: 1, 
+         salon: 11, 
          dia: 'MI',
-         inicio: '07:00:00', 
-         termino: '08:30:00'
+         inicio: '07:00', 
+         termino: '08:30'
       },
       {
-         salon: 1, 
+         salon: 12, 
          dia: 'VI',
-         inicio: '07:00:00', 
-         termino: '08:30:00'
+         inicio: '07:00', 
+         termino: '08:30'
       }
    ];
-
-   let profesores_grupo = [ 8, 33 ]; //únicamente van los id de los profesores
+   let profesores = [ 35692, 35693 ];
+   
    let res =  await peticion(ajax_post, "scripts/grupos.php", { 
       "servicio": "crear_grupo",
-      "grupo_uea": grupo_uea, 
-      "grupo_clave": grupo_clave, 
-      "grupo_evaluacion": grupo_evaluacion,
-      "profesores_grupo": profesores_grupo,
-      "horarios_grupo": horarios
+      "uea": uea, 
+      "clave": clave, 
+      "evaluacion": evaluacion,
+      "profesores": profesores,
+      "horarios": horarios
    }, 2000);
 
    console.log(res);
@@ -171,33 +168,32 @@ async function elimina_grupo(grupo = 61){
    console.log(res);
 }
 
-async function actualiza_grupo(grupo = 60, grupo_uea = 1121040, grupo_clave = 'CAT30', grupo_evaluacion = 1){
-   let incorrecto = [{nombre: 'mario', apellidos: 'Sastre'}, {nombre: 'juan', apellidos: 'cuahutle'}];
-
+async function actualiza_grupo(grupo = 60, uea = 1121040, clave = 'CAT30', evaluacion = 1){
+   let temp = [{nombre: 'mario', apellidos: 'Sastre'}, {nombre: 'juan', apellidos: 'cuahutle'}];
    let horarios = [
       {
-         salon: 1, 
+         salon: 13, 
          dia: 'MA',
-         inicio: '07:00:00', 
-         termino: '08:30:00'
+         inicio: '07:00', 
+         termino: '08:30'
       },
       {
-         salon: 1, 
+         salon: 14, 
          dia: 'JU',
-         inicio: '07:00:00', 
-         termino: '08:30:00'
+         inicio: '07:00', 
+         termino: '08:30'
       }
    ];
-
-   let profesores_grupo = [ 1, 8 ]; //únicamente van los id de los profesores
+   let profesores = [ 44202, 44203 ];
+   
    let res =  await peticion(ajax_post, "scripts/grupos.php", { 
       "servicio": "actualizar_grupo",
-      "grupo": grupo,
-      "grupo_uea": grupo_uea, 
-      "grupo_clave": grupo_clave, 
-      "grupo_evaluacion": grupo_evaluacion,
-      "profesores_grupo": profesores_grupo,
-      "horarios_grupo": horarios
+      "grupo": temp,
+      "uea": uea, 
+      "clave": clave, 
+      "evaluacion": evaluacion,
+      "profesores": profesores,
+      "horarios": horarios
    }, 3000);
 
    console.log(res);

@@ -50,22 +50,18 @@ CREATE TABLE grupos (
 );
 
 CREATE TABLE horarios_grupo (
-   horario_grupo INT NOT NULL AUTO_INCREMENT,
    grupo INT NOT NULL,
    salon INT DEFAULT NULL,
    dia ENUM("LU", "MA", "MI", "JU", "VI") DEFAULT NULL,
    inicio TIME DEFAULT NULL,
    termino TIME DEFAULT NULL,
-   PRIMARY KEY (horario_grupo),
    FOREIGN KEY (grupo) REFERENCES grupos (grupo) ON DELETE CASCADE,
    FOREIGN KEY (salon) REFERENCES salones (salon) ON DELETE CASCADE
 );
 
 CREATE TABLE profesores_grupo (
-   profesor_grupo INT NOT NULL AUTO_INCREMENT,
    grupo INT NOT NULL, 
    profesor INT DEFAULT NULL,
-   PRIMARY KEY (profesor_grupo),
    UNIQUE (grupo, profesor),
    FOREIGN KEY (grupo) REFERENCES grupos (grupo) ON DELETE CASCADE,
    FOREIGN KEY (profesor) REFERENCES profesores (profesor) ON DELETE CASCADE

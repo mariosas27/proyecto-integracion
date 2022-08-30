@@ -7,7 +7,11 @@
 
     try {
         date_default_timezone_set('America/Mexico_City');
+        session_name('programacion_grupos'); session_start( );
         $conexion = new db_access(HOST_DB, USER_DB, PASSWORD_DB, DATABASE_DB);
+        if (empty($_SESSION)) {
+           die(json_encode([ 'estado' => false, 'valor' => 'no_autenticado' ]));
+        }
                         
         // listar ueas
         $entrada = new input( );
