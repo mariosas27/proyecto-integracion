@@ -128,7 +128,6 @@ async function lista_grupos(){
 }
 
 async function crea_grupo(uea = 1151039, clave = 'CAT34', evaluacion = 1){
-   let temp = [{nombre: 'mario', apellidos: 'Sastre'}, {nombre: 'juan', apellidos: 'cuahutle'}];
    let horarios = [
       {
          salon: 10, 
@@ -163,13 +162,7 @@ async function crea_grupo(uea = 1151039, clave = 'CAT34', evaluacion = 1){
    console.log(res);
 }
 
-async function elimina_grupo(grupo = 61){
-   let res =  await peticion(ajax_post, "scripts/grupos.php", { "servicio": "eliminar_grupo", "grupo": grupo }, 5000);
-   console.log(res);
-}
-
-async function actualiza_grupo(grupo = 60, uea = 1121040, clave = 'CAT30', evaluacion = 1){
-   let temp = [{nombre: 'mario', apellidos: 'Sastre'}, {nombre: 'juan', apellidos: 'cuahutle'}];
+async function actualiza_grupo(grupo = 7, uea = 1121040, clave = 'CAT30'){
    let horarios = [
       {
          salon: 13, 
@@ -188,13 +181,17 @@ async function actualiza_grupo(grupo = 60, uea = 1121040, clave = 'CAT30', evalu
    
    let res =  await peticion(ajax_post, "scripts/grupos.php", { 
       "servicio": "actualizar_grupo",
-      "grupo": temp,
+      "grupo": grupo,
       "uea": uea, 
       "clave": clave, 
-      "evaluacion": evaluacion,
       "profesores": profesores,
       "horarios": horarios
    }, 3000);
 
+   console.log(res);
+}
+
+async function elimina_grupo(grupo = 7){
+   let res =  await peticion(ajax_post, "scripts/grupos.php", { "servicio": "eliminar_grupo", "grupo": grupo }, 5000);
    console.log(res);
 }

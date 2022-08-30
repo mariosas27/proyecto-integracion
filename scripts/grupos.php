@@ -138,15 +138,15 @@
             return ['estado' => false, 'valor' => 'inexistente'];
         }
 
-        $conexion->query('DELETE FROM horarios WHERE grupo = ?', $grupo);
-        $conexion->query('DELETE FROM profesores WHERE grupo = ?', $grupo);     
+        $conexion->query('DELETE FROM profesores_grupo WHERE grupo = ?', $grupo); 
+        $conexion->query('DELETE FROM horarios_grupo WHERE grupo = ?', $grupo);    
         foreach($profesores as $id_profesor){
             $conexion->query('INSERT INTO profesores_grupo (grupo, profesor) VALUES (?, ?)', $grupo, $id_profesor);
         }
         foreach($horarios as $horario){
             $conexion->query('INSERT INTO horarios_grupo (grupo, salon, dia, inicio, termino) VALUES (?, ?, ?, ?, ?)', $grupo, $horario['salon'], $horario['dia'], $horario['inicio'], $horario['termino']);
         }
-        return ['estado' => true, 'valor' => $grupo];
+        return ['estado' => true, 'valor' => null ];
     }
     
     function eliminar_grupo_impl($conexion, $grupo){
