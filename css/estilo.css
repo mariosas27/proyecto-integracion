@@ -373,7 +373,7 @@ body {
 
 .tabla_info td{
    font-size: 15px;
-   
+   line-height: 2;  
 }
 
 
@@ -418,6 +418,18 @@ button.bx:hover{
    /* display: block; */
    font-weight: 500;
    padding: 15px 10px;
+   transition: background-color .3s ease-out ;
+   text-align: center;
+   border: none;
+   border-radius: 7px;
+   font-size: 16px;
+}
+
+.btn_small {
+   text-decoration: none;
+   /* display: block; */
+   font-weight: 400;
+   padding: 10px 10px;
    transition: background-color .3s ease-out ;
    text-align: center;
    border: none;
@@ -528,4 +540,60 @@ form input, form select{
 .readOnly_input{
    background-color: rgba(242,242,242);
    border-style: none;
+}
+
+.alert_notif{
+   background-color: #FF0000;
+   color: #fff;
+   padding: 8px;
+   font-weight: 500;
+}
+
+#vista_horario div{
+   margin-bottom: 15px;
+   display: flex;
+   justify-content: space-between; 
+}
+
+#info_grupo{
+   display: flex;
+   min-width: 700px;
+   justify-content: space-between;
+   align-items: center;
+}
+#info_grupo p{
+   font-weight: 500;
+}
+#info_grupo span{
+   font-weight: 400;
+}
+
+.contenedor_checkbox{
+   display: flex;
+   flex-direction: row;
+   max-width: 600px;
+}
+.contenedor_checkbox input{
+   height: 20px;
+   margin: 0;
+   padding: 0;
+}
+
+.entrada_form_aux{
+   padding: 10px;
+   border: 1px solid rgba(0, 0, 0, 0.2);
+   background-color: rgba(247,247,247);
+   margin-bottom: 15px;
+}
+
+.time_contenedor{
+   display: flex;
+   flex-direction: row;
+}
+.entrada_form_aux .time_contenedor input, .entrada_form_aux .time_contenedor label{
+   margin-right: 20px;
+}
+
+.entrada_form_aux .time_contenedor input{
+   width: 120px;
 }

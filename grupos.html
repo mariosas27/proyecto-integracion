@@ -8,49 +8,48 @@
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@100;200;300;400;500;600;700;800&family=Roboto:wght@100;300;400;500;700;900&display=swap">
-      <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" >
+      <link rel="stylesheet" href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' >
       
       <script src="./includes/ajax.js" defer></script>
       <script src="./scripts/servidor.js" defer></script>
       <script src="./scripts/sesion.js" defer></script>
       <script src="./scripts/sidebar.js" defer></script>
-      <script src="https://accounts.google.com/gsi/client" defer></script>
-      <title>Sistema</title>
+      <script src="./scripts/grupos.js" defer></script>
+      <title>Grupos</title>
    </head>
-   <body onload="inicia_sesion(null, true)">
-      
+   <body onload="inicia_sesion(null, true), muestra_trimestres( ), carga_informacion()">
       <div class="visible_autenticado">
          <div class="sidebar">
             <div class="logo_detalles">
-               <i class="bx bxs-graduation icon"></i>
+               <i class='bx bxs-graduation icon'></i>
                <div class="logo_nombre">UAM...</div>
-               <i class="bx bx-menu" id="btn" ></i>
+               <i class='bx bx-menu' id="btn" ></i>
             </div>
             <ul class="nav_list">
                <li>
                   <a href="index.html">
-                  <i class="bx bx-grid-alt"></i>
+                  <i class='bx bx-grid-alt'></i>
                   <span class="links_name">Panel</span>
                   </a>
                   <span class="tooltip">Panel</span>
                </li>
                <li>
                   <a href="profesores.html">
-                     <i class="bx bx-user" ></i>
+                     <i class='bx bx-user' ></i>
                      <span class="links_name">Profesores</span>
                   </a>
                   <span class="tooltip">Profesores</span>
                </li>
                <li>
                   <a href="salones.html">
-                     <i class="bx bxs-school"></i>
+                     <i class='bx bxs-school'></i>
                      <span class="links_name">Salones</span>
                   </a>
                   <span class="tooltip">Salones</span>
                </li>
                <li>
-                  <a href="#">
-                     <i class="bx bx-group" ></i>
+                  <a href="grupos.html">
+                     <i class='bx bx-group' ></i>
                      <span class="links_name">Grupos</span>
                   </a>
                   <span class="tooltip">Grupos</span>
@@ -67,7 +66,7 @@
                        <div class="log_out_text">   
                            Cerrar Sesión
                        </div>
-                       <i class="bx bx-log-out" id="log_out" ></i>
+                       <i class='bx bx-log-out' id="log_out" ></i>
                    </a>
                </li>
             </ul>
@@ -76,23 +75,127 @@
          <div class="main_content">
             <div class="navigation_container">
                <nav class="navigation">
-                  <h1 class="page_title">Panel</h1>
+                  <h1 class="page_title">Grupos</h1>
                   <div class="nav_links">
-                     <i class="bx bx-user" ></i>
+                     <i class='bx bx-user' ></i>
                      <span class="user_name" id="usuario"></span>
-                     <a href="#" onclick="termina_sesion()">Cerrar Sesión</a>
+                     <button onclick="termina_sesion()" class="btn btn_blue">Cerrar Sesión</button>
                   </div>
                </nav>
             </div>
 
             <main class="contenedor panel">
-                <button onclick="lista_grupos()">Lista grupos</button>
-                <button onclick="crea_grupo()">Crea grupo</button>
-                <button onclick="elimina_grupo()">Elimina grupo</button>
-                <button onclick="actualiza_grupo()">actualiza_grupo</button>
+                <div class="contenedor_busqueda" id="contenedor_busqueda">
+                    <div>
+                        Trimestre:
+                        <select name="trimestre" id="trimestre_filtro" onchange="filtra_trimestre( )"></select>
+
+                        Tipo Evaluacion:
+                        <select name="evaluacion" id="evaluacion_filtro" onchange="filtra_trimestre( )">
+                           <option value="GLO">Gobal</option>
+                           <option value="REC">Recuperacion</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="button" onclick="muestra_creacion_grupo( )" class="btn btn_green">Crear Grupo</button>
+                    </div>
+                </div>
+
+                <div class="contenedor_tabla" id="contenedor_tabla">
+                    <table class="tabla_info" id="tabla_grupos">
+                        <tr class="tabla_head">
+                           <th>Clave</th> 
+                           <th>UEA</th>
+                           <th>Nombre UEA</th>
+                           <th>Horas</th>
+                           <!-- <th>Alertas</th> -->
+                           <th>Profesores</th>
+                           <th>Horarios</th>
+                        </tr>
+                        <tbody id="tabla_grupos_cuerpo"></tbody>
+                    </table>
+                </div>
+                <div id="vista_horario" class="no_visible">
+                  <div>
+                     <div id="info_grupo">
+                        <p>Grupo: <span id="p_grupo"></span> </p>
+                        <p>UEA: <span id="p_uea"></span></p>
+                        <p>Nombre UEA: <span id="p_nombre"></span> </p>
+                        <p>Horas: <span id="p_horas"></span> </p>
+                     </div>
+                     <div><button class="btn btn_red" id="horarios_regresa" onclick="cierra_vista_horarios()">Regresar</button></div>
+                  </div>
+                  <table class="tabla_info" id="tabla_horarios">
+                     <tr class="tabla_head">
+                        <th>Días</th> 
+                        <th>Salón</th>
+                        <th>Incio</th>
+                        <th>Termino</th>
+                     </tr>
+                     <tbody id="tabla_horarios_cuerpo"></tbody>
+                  </table>
+                </div>
+                <form class="" id="forma_creacion">
+                    <h2 class="titulo_form">Crear Salón</h2>
+                    
+                    <label for="uea">UEA: </label>
+                    <select name="uea" id="select_ueas"></select>
+
+                    <label for="clave">Clave Grupo: </label>
+                    <input required type="text" pattern=".+" name="clave" placeholder="Ingresa la clave del grupo">
+                
+                    <label for="cupo">Cupo </label>
+                    <input required type="text" pattern=".+" name="cupo" placeholder="Ingresa el cupo">
+
+                    <label for="num_entradas_profesor">Número de profesores</label>
+                    <input type="number" id="num_entradas_profesor" value="0" name="num_entradas_profesor" min="0" onchange="numero_entradas_profesor()">
+                    <div id="contenedor_profesores"></div>
+
+                    <label for="num_entradas_horarios">Número de entradas de horarios</label>
+                    <input type="number" id="num_entradas_horarios" name="num_entradas_horarios" min="0" value="0" onchange="numero_entradas_horarios()">
+                    <div id="contenedor_horarios"></div>
+                    
+                    <div class="submit_form">
+                        <button type="button" class="btn btn_blue" onclick="ejecuta_creacion_grupo(this.form)">Agregar Profesor</button>
+                        <button type="button" class="btn btn_red" onclick="cancela_creacion_profesor( )">Cancelar</button>
+                    </div>
+                </form>
+
+                <form class="no_visible" id="forma_actualizacion">
+                    <h2 class="titulo_form">Actualiza Salón</h2>
+                    
+                    <label for="profesor">Número Económico </label>
+                    <input required type="text" pattern=".+" name="profesor" placeholder="Ingresa el número económico" readonly>
+
+                    <label for="apellidos">Apellidos </label>
+                    <input required type="text" pattern=".+" name="apellidos" placeholder="Ingresa los apellidos">
+                
+                    <label for="nombre">Nombre </label>
+                    <input required type="text" pattern=".+" name="nombre" placeholder="Ingresa el nombre">
+
+                    <label for="email">Email </label>
+                    <input required type="email" pattern=".+" name="email" placeholder="Ingresa el email">
+                
+                    <label for="departamento">Departamento </label>
+                    <select name="departamento">
+                        <option value="null">No aplica</option>
+                        <option value="CB">Ciencias Básicas</option>
+                        <option value="EL">Electrónica</option>
+                        <option value="EN">Energía</option>
+                        <option value="MA">Materiales</option>
+                        <option value="SI">Sistemas</option>
+                    </select>
+
+                    <label for="notas">Notas </label>
+                    <input required type="text" pattern=".+" name="notas" placeholder="Ingresa notas">
+                    
+                    <div class="submit_form">
+                        <button type="button" class="btn btn_blue" onclick="ejecuta_actualizacion_profesor(this.form)">Actualizar Profesor</button>
+                        <button type="button" class="btn btn_red" onclick="cancela_actualizacion_profesor( )" >Cancelar</button>
+                    </div>
+                </form>
             </main>
          </div>
       </div>
-      
    </body>
 </html>

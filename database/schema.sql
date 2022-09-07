@@ -35,7 +35,8 @@ CREATE TABLE evaluaciones (
    trimestre YEAR NOT NULL,
    periodo ENUM("I", "P", "O") NOT NULL,
    tipo ENUM("GLO", "REC") NOT NULL,
-   PRIMARY KEY (evaluacion)
+   PRIMARY KEY (evaluacion),
+   UNIQUE (trimestre, periodo, tipo)
 );
 
 CREATE TABLE grupos (
@@ -52,7 +53,7 @@ CREATE TABLE grupos (
 CREATE TABLE horarios_grupo (
    grupo INT NOT NULL,
    salon INT DEFAULT NULL,
-   dia ENUM("LU", "MA", "MI", "JU", "VI") DEFAULT NULL,
+   dia SET("LU", "MA", "MI", "JU", "VI") DEFAULT NULL,
    inicio TIME DEFAULT NULL,
    termino TIME DEFAULT NULL,
    FOREIGN KEY (grupo) REFERENCES grupos (grupo) ON DELETE CASCADE,

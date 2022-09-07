@@ -14,6 +14,12 @@
         }
         
         $entrada = new input( );
+        $entrada->validate($_POST, 'servicio', make_filter(match_predicate('listar_evaluaciones')));
+        if($entrada->status( )){
+            die(json_encode( listar_evaluaciones_impl($conexion) ));
+        }
+
+        $entrada = new input( );
         $entrada->validate($_POST, 'servicio', make_filter(match_predicate('listar_grupos')));
         $entrada->validate($_POST, 'evaluacion', builtin_filter(FILTER_VALIDATE_INT));
         if($entrada->status( )) {
@@ -96,6 +102,14 @@
    }
    
    // implementación de casos de uso
+    function listar_evaluaciones_impl($conexion){
+        $actual = json_decode(file_get_contents("https://callix.azc.uam.mx/rcc/boligrama/scripts/trimestre.php"));
+        $conexion->query('INSERT IGNORE INTO evaluaciones (trimestre, periodo, tipo) VALUES (?, ?, ?)', $actual->anyo, $actual->periodo, 'GLO');
+        $conexion->query('INSERT IGNORE INTO evaluaciones (trimestre, periodo, tipo) VALUES (?, ?, ?)', $actual->anyo, $actual->periodo, 'REC');
+        
+        $filas = $conexion->query('SELECT evaluacion, trimestre, periodo, tipo FROM evaluaciones');
+        return ['estado' => true, 'valor' => $filas];
+    }
    
     function listar_grupos_impl($conexion, $evaluacion){
         list($dummy, $grupos, $profesores, $horarios) = $conexion->multi_query("

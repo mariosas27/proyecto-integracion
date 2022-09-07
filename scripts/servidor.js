@@ -120,11 +120,27 @@ async function lista_ueas(){
     return await peticion(ajax_post, "scripts/ueas.php", { "servicio": "listar_ueas" }, 1000);
 }
 
+//evaluaciones
+
+async function lista_evaluaciones(){
+   let res = await peticion(ajax_post, "scripts/grupos.php", { "servicio": "listar_evaluaciones" }, 2000 );
+   return res;
+}
+
+async function crea_evaluacion(trimestre = 2022, periodo = 'I', tipo = 'GLO'){
+   let res = await peticion(ajax_post, "scripts/grupos.php", { 
+      "servicio": "crear_evaluacion",  
+      "trimestre": trimestre, 
+      "periodo": periodo, 
+      "tipo": tipo
+   }, 1000);
+   console.log(res);
+}
+
 //grupos
 
-async function lista_grupos(){
-   let res =  await peticion(ajax_post, "scripts/grupos.php", { "servicio": "listar_grupos", "evaluacion": 1 }, 1000);
-   console.log(res);
+async function lista_grupos(evaluacion){
+   return await peticion(ajax_post, "scripts/grupos.php", { "servicio": "listar_grupos", "evaluacion": evaluacion }, 4000);
 }
 
 async function crea_grupo(uea = 1151039, clave = 'CAT34', evaluacion = 1){
