@@ -27,7 +27,14 @@ async function peticion(funcion, url, ...parametros) {
             } else if (res.valor == "duplicado") {
                return window.alert("Ya existe un salon con el mismo nombre. Favor de verificar.");
             }
-         } else if (script == "sesion") {
+         } else if (script == "grupos") {
+            if (res.valor == "inexistente") {
+               return window.alert("El grupo referido no existe. Favor de verificar.");
+            } else if (res.valor == "duplicado") {
+               return window.alert("Ya existe un grupo con la misma información. Favor de verificar.");
+            }
+         }
+          else if (script == "sesion") {
             if (res.valor == "token_invalido") {
                return window.alert("El servidor rechazó la verificación de identidad.");
             } else if (res.valor == "email_invalido") {
@@ -143,63 +150,25 @@ async function lista_grupos(evaluacion){
    return await peticion(ajax_post, "scripts/grupos.php", { "servicio": "listar_grupos", "evaluacion": evaluacion }, 4000);
 }
 
-async function crea_grupo(uea = 1151039, clave = 'CAT34', evaluacion = 1){
-   let horarios = [
-      {
-         salon: 10, 
-         dia: 'LU',
-         inicio: '07:00', 
-         termino: '08:30'
-      },
-      {
-         salon: 11, 
-         dia: 'MI',
-         inicio: '07:00', 
-         termino: '08:30'
-      },
-      {
-         salon: 12, 
-         dia: 'VI',
-         inicio: '07:00', 
-         termino: '08:30'
-      }
-   ];
-   let profesores = [ 35692, 35693 ];
-   
-   let res =  await peticion(ajax_post, "scripts/grupos.php", { 
+async function crea_grupo(uea = 1151039, clave = 'CAT34', evaluacion, profesores, horarios, cupo = 45){
+   return await peticion(ajax_post, "scripts/grupos.php", { 
       "servicio": "crear_grupo",
       "uea": uea, 
-      "clave": clave, 
+      "clave": clave,
+      "cupo": cupo, 
       "evaluacion": evaluacion,
       "profesores": profesores,
       "horarios": horarios
    }, 2000);
-
-   console.log(res);
 }
 
-async function actualiza_grupo(grupo = 7, uea = 1121040, clave = 'CAT30'){
-   let horarios = [
-      {
-         salon: 13, 
-         dia: 'MA',
-         inicio: '07:00', 
-         termino: '08:30'
-      },
-      {
-         salon: 14, 
-         dia: 'JU',
-         inicio: '07:00', 
-         termino: '08:30'
-      }
-   ];
-   let profesores = [ 44202, 44203 ];
-   
+async function actualiza_grupo(grupo = 7, uea = 1121040, clave = 'CAT30', profesores, horarios, cupo){
    let res =  await peticion(ajax_post, "scripts/grupos.php", { 
       "servicio": "actualizar_grupo",
       "grupo": grupo,
       "uea": uea, 
       "clave": clave, 
+      "cupo": cupo,
       "profesores": profesores,
       "horarios": horarios
    }, 3000);
@@ -210,4 +179,8 @@ async function actualiza_grupo(grupo = 7, uea = 1121040, clave = 'CAT30'){
 async function elimina_grupo(grupo = 7){
    let res =  await peticion(ajax_post, "scripts/grupos.php", { "servicio": "eliminar_grupo", "grupo": grupo }, 5000);
    console.log(res);
+}
+
+async function consulta_grupo(grupo){
+   return await peticion(ajax_post, "scripts/grupos.php", { "servicio": "consulta_grupo", "grupo": grupo }, 2000);
 }

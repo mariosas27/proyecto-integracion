@@ -17,7 +17,7 @@
       <script src="./scripts/grupos.js" defer></script>
       <title>Grupos</title>
    </head>
-   <body onload="inicia_sesion(null, true), muestra_trimestres( ), carga_informacion()">
+   <body onload="inicia_sesion(null, true), muestra_trimestres( )">
       <div class="visible_autenticado">
          <div class="sidebar">
             <div class="logo_detalles">
@@ -91,7 +91,7 @@
                         <select name="trimestre" id="trimestre_filtro" onchange="filtra_trimestre( )"></select>
 
                         Tipo Evaluacion:
-                        <select name="evaluacion" id="evaluacion_filtro" onchange="filtra_trimestre( )">
+                        <select name="evaluacion" id="evaluacion_filtro" onchange="filtra_trimestre( )" value="GLO">
                            <option value="GLO">Gobal</option>
                            <option value="REC">Recuperacion</option>
                         </select>
@@ -108,6 +108,7 @@
                            <th>UEA</th>
                            <th>Nombre UEA</th>
                            <th>Horas</th>
+                           <th>Cupo</th>
                            <!-- <th>Alertas</th> -->
                            <th>Profesores</th>
                            <th>Horarios</th>
@@ -135,8 +136,8 @@
                      <tbody id="tabla_horarios_cuerpo"></tbody>
                   </table>
                 </div>
-                <form class="" id="forma_creacion">
-                    <h2 class="titulo_form">Crear Salón</h2>
+                <form class="no_visible" id="forma_creacion">
+                    <h2 class="titulo_form">Crear Grupo</h2>
                     
                     <label for="uea">UEA: </label>
                     <select name="uea" id="select_ueas"></select>
@@ -145,55 +146,48 @@
                     <input required type="text" pattern=".+" name="clave" placeholder="Ingresa la clave del grupo">
                 
                     <label for="cupo">Cupo </label>
-                    <input required type="text" pattern=".+" name="cupo" placeholder="Ingresa el cupo">
+                    <input required type="number" name="cupo" placeholder="Ingresa el cupo" value="0" min="0" onchange="test()">
 
                     <label for="num_entradas_profesor">Número de profesores</label>
-                    <input type="number" id="num_entradas_profesor" value="0" name="num_entradas_profesor" min="0" onchange="numero_entradas_profesor()">
+                    <input type="number" id="num_entradas_profesor"  name="num_entradas_profesor" min="0" onchange="numero_entradas_profesor('contenedor_profesores', 'num_entradas_profesor')" onkeydown="controlador_keydown(event)" value="0">
                     <div id="contenedor_profesores"></div>
 
                     <label for="num_entradas_horarios">Número de entradas de horarios</label>
-                    <input type="number" id="num_entradas_horarios" name="num_entradas_horarios" min="0" value="0" onchange="numero_entradas_horarios()">
+                    <input type="number" id="num_entradas_horarios" name="num_entradas_horarios" min="0" onchange="numero_entradas_horarios('contenedor_horarios', 'num_entradas_horarios')" onkeydown="controlador_keydown(event)" value="0">
                     <div id="contenedor_horarios"></div>
                     
                     <div class="submit_form">
-                        <button type="button" class="btn btn_blue" onclick="ejecuta_creacion_grupo(this.form)">Agregar Profesor</button>
-                        <button type="button" class="btn btn_red" onclick="cancela_creacion_profesor( )">Cancelar</button>
+                        <button type="button" class="btn btn_blue" onclick="ejecuta_creacion_grupo(this.form)">Crear Grupo</button>
+                        <button type="button" class="btn btn_red" onclick="cancela_creacion_grupo( )">Cancelar</button>
                     </div>
                 </form>
 
                 <form class="no_visible" id="forma_actualizacion">
-                    <h2 class="titulo_form">Actualiza Salón</h2>
-                    
-                    <label for="profesor">Número Económico </label>
-                    <input required type="text" pattern=".+" name="profesor" placeholder="Ingresa el número económico" readonly>
+                  <h2 class="titulo_form">Actualizar Grupo</h2>
+                  <input type="hidden" name="grupo">
 
-                    <label for="apellidos">Apellidos </label>
-                    <input required type="text" pattern=".+" name="apellidos" placeholder="Ingresa los apellidos">
-                
-                    <label for="nombre">Nombre </label>
-                    <input required type="text" pattern=".+" name="nombre" placeholder="Ingresa el nombre">
+                  <label for="uea">UEA: </label>
+                  <select name="uea" id="select_ueas_act"></select>
 
-                    <label for="email">Email </label>
-                    <input required type="email" pattern=".+" name="email" placeholder="Ingresa el email">
-                
-                    <label for="departamento">Departamento </label>
-                    <select name="departamento">
-                        <option value="null">No aplica</option>
-                        <option value="CB">Ciencias Básicas</option>
-                        <option value="EL">Electrónica</option>
-                        <option value="EN">Energía</option>
-                        <option value="MA">Materiales</option>
-                        <option value="SI">Sistemas</option>
-                    </select>
+                  <label for="clave">Clave Grupo: </label>
+                  <input required type="text" pattern=".+" name="clave" placeholder="Ingresa la clave del grupo">
+              
+                  <label for="cupo">Cupo </label>
+                  <input required type="number" name="cupo" placeholder="Ingresa el cupo" value="0" min="0">
 
-                    <label for="notas">Notas </label>
-                    <input required type="text" pattern=".+" name="notas" placeholder="Ingresa notas">
-                    
-                    <div class="submit_form">
-                        <button type="button" class="btn btn_blue" onclick="ejecuta_actualizacion_profesor(this.form)">Actualizar Profesor</button>
-                        <button type="button" class="btn btn_red" onclick="cancela_actualizacion_profesor( )" >Cancelar</button>
-                    </div>
-                </form>
+                  <label for="num_entradas_profesor_actualizar">Número de profesores</label>
+                  <input type="number" id="num_entradas_profesor_actualizar"  name="num_entradas_profesor_actualizar" min="0" onchange="numero_entradas_profesor('contenedor_profesores_actualizar', 'num_entradas_profesor_actualizar')" onkeydown="controlador_keydown(event)" value="0">
+                  <div id="contenedor_profesores_actualizar"></div>
+
+                  <label for="num_entradas_horarios_actualizar">Número de entradas de horarios</label>
+                  <input type="number" id="num_entradas_horarios_actualizar" name="num_entradas_horarios_actualizar" min="0" onchange="numero_entradas_horarios('contenedor_horarios_actualizar','num_entradas_horarios_actualizar')" onkeydown="controlador_keydown(event)" value="0">
+                  <div id="contenedor_horarios_actualizar"></div>
+                  
+                  <div class="submit_form">
+                      <button type="button" class="btn btn_blue" onclick="ejecuta_actualizacion_grupo(this.form)">Actualizar Grupo</button>
+                      <button type="button" class="btn btn_red" onclick="cancela_actualizacion_grupo( )">Cancelar</button>
+                  </div>
+              </form>
             </main>
          </div>
       </div>

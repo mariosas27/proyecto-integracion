@@ -595,5 +595,10 @@ form input, form select{
 }
 
 .entrada_form_aux .time_contenedor input{
-   width: 120px;
+   width: 130px;
+}
+
+.success_update{
+   background-color: #4BB543;
+   color: #fff;
 }

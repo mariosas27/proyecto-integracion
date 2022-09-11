@@ -44,6 +44,7 @@ CREATE TABLE grupos (
    uea INT NOT NULL, 
    clave VARCHAR(32) NOT NULL,
    evaluacion INT NOT NULL,
+   cupo INT NOT NULL,
    PRIMARY KEY (grupo),
    UNIQUE (uea, clave, evaluacion),
    FOREIGN KEY (uea) REFERENCES ueas (uea) ON DELETE CASCADE,
