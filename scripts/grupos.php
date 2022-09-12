@@ -18,14 +18,14 @@
         if($entrada->status( )){
             die(json_encode( listar_evaluaciones_impl($conexion) ));
         }
-        //----------- prueba -----------
+        
         $entrada = new input( );
         $entrada->validate($_POST, 'servicio', make_filter(match_predicate('consulta_grupo')));
         $entrada->validate($_POST, 'grupo', builtin_filter(FILTER_VALIDATE_INT));
         if($entrada->status( )) {
             die(json_encode( cosulta_grupo_impl($conexion, $entrada->output('grupo')) ));
         }
-        //------------------------------
+        
         $entrada = new input( );
         $entrada->validate($_POST, 'servicio', make_filter(match_predicate('listar_grupos')));
         $entrada->validate($_POST, 'evaluacion', builtin_filter(FILTER_VALIDATE_INT));

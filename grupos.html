@@ -146,14 +146,14 @@
                     <input required type="text" pattern=".+" name="clave" placeholder="Ingresa la clave del grupo">
                 
                     <label for="cupo">Cupo </label>
-                    <input required type="number" name="cupo" placeholder="Ingresa el cupo" value="0" min="0" onchange="test()">
+                    <input required type="number" name="cupo" placeholder="Ingresa el cupo" value="0" min="0">
 
                     <label for="num_entradas_profesor">Número de profesores</label>
-                    <input type="number" id="num_entradas_profesor"  name="num_entradas_profesor" min="0" onchange="numero_entradas_profesor('contenedor_profesores', 'num_entradas_profesor')" onkeydown="controlador_keydown(event)" value="0">
+                    <input type="number" id="num_entradas_profesor"  name="num_entradas_profesor" min="0" oninput="numero_entradas_profesor('contenedor_profesores', 'num_entradas_profesor')" onkeydown="controlador_keydown(event)" value="0">
                     <div id="contenedor_profesores"></div>
 
                     <label for="num_entradas_horarios">Número de entradas de horarios</label>
-                    <input type="number" id="num_entradas_horarios" name="num_entradas_horarios" min="0" onchange="numero_entradas_horarios('contenedor_horarios', 'num_entradas_horarios')" onkeydown="controlador_keydown(event)" value="0">
+                    <input type="number" id="num_entradas_horarios" name="num_entradas_horarios" min="0" oninput="numero_entradas_horarios('contenedor_horarios', 'num_entradas_horarios')" onkeydown="controlador_keydown(event)" value="0">
                     <div id="contenedor_horarios"></div>
                     
                     <div class="submit_form">
@@ -176,11 +176,11 @@
                   <input required type="number" name="cupo" placeholder="Ingresa el cupo" value="0" min="0">
 
                   <label for="num_entradas_profesor_actualizar">Número de profesores</label>
-                  <input type="number" id="num_entradas_profesor_actualizar"  name="num_entradas_profesor_actualizar" min="0" onchange="numero_entradas_profesor('contenedor_profesores_actualizar', 'num_entradas_profesor_actualizar')" onkeydown="controlador_keydown(event)" value="0">
+                  <input type="number" id="num_entradas_profesor_actualizar"  name="num_entradas_profesor_actualizar" min="0" oninput="numero_entradas_profesor('contenedor_profesores_actualizar', 'num_entradas_profesor_actualizar')" onkeydown="controlador_keydown(event)" value="0">
                   <div id="contenedor_profesores_actualizar"></div>
 
                   <label for="num_entradas_horarios_actualizar">Número de entradas de horarios</label>
-                  <input type="number" id="num_entradas_horarios_actualizar" name="num_entradas_horarios_actualizar" min="0" onchange="numero_entradas_horarios('contenedor_horarios_actualizar','num_entradas_horarios_actualizar')" onkeydown="controlador_keydown(event)" value="0">
+                  <input type="number" id="num_entradas_horarios_actualizar" name="num_entradas_horarios_actualizar" min="0" oninput="numero_entradas_horarios('contenedor_horarios_actualizar','num_entradas_horarios_actualizar')" onkeydown="controlador_keydown(event)" value="0">
                   <div id="contenedor_horarios_actualizar"></div>
                   
                   <div class="submit_form">

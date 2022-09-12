@@ -122,7 +122,6 @@ function dibuja_forma(forma, grupo = null){
     let campos = ['grupo','uea', 'clave', 'cupo'];
     //para la actualizacion
     if(grupo !== null){
-        console.log('Antes de la actualizacion --> ',grupo);
         for(let campo of campos){
             forma[campo].value = grupo[campo];
         }
@@ -133,12 +132,10 @@ function dibuja_forma(forma, grupo = null){
         valor_previo_horarios = forma['num_entradas_horarios_actualizar'].value = (grupo.horarios !== undefined) ? grupo.horarios.length : 0;
 
         for(let i = 1; i <= valor_previo_profesores; ++i){
-            console.log(i);
             dibuja_contenedor_nuevo_profesor(i, 'contenedor_profesores_actualizar', grupo.profesores[i - 1].profesor);
         }
 
         for(let i = 1; i <= valor_previo_horarios; ++i){
-            console.log(`Horario: ${i}`);
             dibuja_contenedor_nuevo_horario(i, 'contenedor_horarios_actualizar', grupo.horarios[i - 1]);
         }
     }
@@ -151,7 +148,6 @@ function dibuja_uea(uea){
 }
 
 async function numero_entradas_profesor(contenedorPadre, inputOrigen){
-    console.log('Aquí estamos');
     let actual = document.getElementById(inputOrigen).value;
     if(actual - valor_previo_profesores > 0){
         await dibuja_contenedor_nuevo_profesor(actual, contenedorPadre);
@@ -164,7 +160,6 @@ async function numero_entradas_profesor(contenedorPadre, inputOrigen){
 }
 
 async function dibuja_contenedor_nuevo_profesor(numero_select_profesores, contenedorPadre, defaultValor = 0){
-    console.log("valor previo profesores: ", valor_previo_profesores);
     let divProfesor = document.createElement('div');
     divProfesor.classList.add('entrada_form_aux');
     let label = document.createElement('label');
@@ -367,8 +362,6 @@ async function ejecuta_creacion_grupo(forma){
 
 async function ejecuta_actualizacion_grupo(forma){
     let datos = Object.fromEntries((new FormData(forma)).entries());
-    console.log('datos actualizados ---> ', datos);
-    // console.log(agrupa_horarios(datos));
     await actualiza_grupo(datos.grupo, datos.uea, datos.clave, agrupa_profesores(datos), agrupa_horarios(datos, 'actualizar'), datos.cupo);
     alert("Se actualizó el grupo exitosamente.");
     document.getElementById(datos.grupo).remove();
@@ -462,7 +455,4 @@ function obtener_dias_horario(horario){
         if(horario[dia] !== undefined) res.push(horario[dia])
     }
     return res.toString();
-}
-function test(){
-    console.log('cupo');
 }
