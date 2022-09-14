@@ -1,5 +1,3 @@
-let evaluaciones;
-let evaluacion_actual;
 let valor_previo_profesores = 0;
 let valor_previo_horarios = 0;
 // =================== rutinas auxiliares de dibujo ====================
@@ -273,14 +271,14 @@ function controlador_keydown(event){
 // =================== consultar, agregar, actualizar y eliminar ====================
 
 async function muestra_trimestres(){
-    evaluaciones = await lista_evaluaciones();
+    let evaluaciones = await lista_evaluaciones();
     let trimestres = [];
     for(let evaluacion of evaluaciones.reverse()){
-        if(!trimestres.includes(`${evaluacion.trimestre}_${evaluacion.periodo}`)){
+        if(!trimestres.includes(`${evaluacion.trimestre}-${evaluacion.periodo}`)){
             let option = document.createElement('option');
-            option.value = option.innerText  = `${evaluacion.trimestre}_${evaluacion.periodo}`;
+            option.value = option.innerText  = `${evaluacion.trimestre}-${evaluacion.periodo}`;
             document.getElementById('trimestre_filtro').appendChild(option);
-            trimestres.push(`${evaluacion.trimestre}_${evaluacion.periodo}`);
+            trimestres.push(`${evaluacion.trimestre}-${evaluacion.periodo}`);
         }   
     }
     evaluacion_actual = evaluaciones[1].evaluacion;
@@ -365,7 +363,7 @@ async function ejecuta_actualizacion_grupo(forma){
     await actualiza_grupo(datos.grupo, datos.uea, datos.clave, agrupa_profesores(datos), agrupa_horarios(datos, 'actualizar'), datos.cupo);
     alert("Se actualizó el grupo exitosamente.");
     document.getElementById(datos.grupo).remove();
-    dibuja_grupo(await consulta_grupo(datos.grupo), "inicio");
+    dibuja_grupo(await consultar_grupo(datos.grupo), "inicio");
     document.getElementById(datos.grupo).classList.add('success_update');
     setTimeout( () => { document.getElementById(datos.grupo).classList.remove('success_update') }, 4000 );
     cancela_actualizacion_grupo();

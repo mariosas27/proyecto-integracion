@@ -127,30 +127,17 @@ async function lista_ueas(){
     return await peticion(ajax_post, "scripts/ueas.php", { "servicio": "listar_ueas" }, 1000);
 }
 
-//evaluaciones
-
-async function lista_evaluaciones(){
-   let res = await peticion(ajax_post, "scripts/grupos.php", { "servicio": "listar_evaluaciones" }, 2000 );
-   return res;
-}
-
-async function crea_evaluacion(trimestre = 2022, periodo = 'I', tipo = 'GLO'){
-   let res = await peticion(ajax_post, "scripts/grupos.php", { 
-      "servicio": "crear_evaluacion",  
-      "trimestre": trimestre, 
-      "periodo": periodo, 
-      "tipo": tipo
-   }, 1000);
-   console.log(res);
-}
-
 //grupos
 
-async function lista_grupos(evaluacion){
-   return await peticion(ajax_post, "scripts/grupos.php", { "servicio": "listar_grupos", "evaluacion": evaluacion }, 4000);
+async function lista_evaluaciones(){
+   return await peticion(ajax_post, "scripts/grupos.php", { "servicio": "listar_evaluaciones" }, 1000 );
 }
 
-async function crea_grupo(uea = 1151039, clave = 'CAT34', evaluacion, profesores, horarios, cupo = 45){
+async function lista_grupos(evaluacion){
+   return await peticion(ajax_post, "scripts/grupos.php", { "servicio": "listar_grupos", "evaluacion": evaluacion }, 1000);
+}
+
+async function crea_grupo(uea, clave, evaluacion, profesores, horarios, cupo){
    return await peticion(ajax_post, "scripts/grupos.php", { 
       "servicio": "crear_grupo",
       "uea": uea, 
@@ -159,11 +146,11 @@ async function crea_grupo(uea = 1151039, clave = 'CAT34', evaluacion, profesores
       "evaluacion": evaluacion,
       "profesores": profesores,
       "horarios": horarios
-   }, 2000);
+   }, 1000);
 }
 
-async function actualiza_grupo(grupo = 7, uea = 1121040, clave = 'CAT30', profesores, horarios, cupo){
-   let res =  await peticion(ajax_post, "scripts/grupos.php", { 
+async function actualiza_grupo(grupo, uea, clave, profesores, horarios, cupo){
+   return await peticion(ajax_post, "scripts/grupos.php", { 
       "servicio": "actualizar_grupo",
       "grupo": grupo,
       "uea": uea, 
@@ -171,16 +158,13 @@ async function actualiza_grupo(grupo = 7, uea = 1121040, clave = 'CAT30', profes
       "cupo": cupo,
       "profesores": profesores,
       "horarios": horarios
-   }, 3000);
-
-   console.log(res);
+   }, 1000);
 }
 
-async function elimina_grupo(grupo = 7){
-   let res =  await peticion(ajax_post, "scripts/grupos.php", { "servicio": "eliminar_grupo", "grupo": grupo }, 5000);
-   console.log(res);
+async function elimina_grupo(grupo){
+   return await peticion(ajax_post, "scripts/grupos.php", { "servicio": "eliminar_grupo", "grupo": grupo }, 1000);
 }
 
 async function consulta_grupo(grupo){
-   return await peticion(ajax_post, "scripts/grupos.php", { "servicio": "consulta_grupo", "grupo": grupo }, 2000);
+   return await peticion(ajax_post, "scripts/grupos.php", { "servicio": "consultar_grupo", "grupo": grupo }, 1000);
 }

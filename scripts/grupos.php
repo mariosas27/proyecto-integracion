@@ -20,29 +20,29 @@
         }
         
         $entrada = new input( );
-        $entrada->validate($_POST, 'servicio', make_filter(match_predicate('consulta_grupo')));
-        $entrada->validate($_POST, 'grupo', builtin_filter(FILTER_VALIDATE_INT));
-        if($entrada->status( )) {
-            die(json_encode( cosulta_grupo_impl($conexion, $entrada->output('grupo')) ));
-        }
-        
-        $entrada = new input( );
         $entrada->validate($_POST, 'servicio', make_filter(match_predicate('listar_grupos')));
         $entrada->validate($_POST, 'evaluacion', builtin_filter(FILTER_VALIDATE_INT));
         if($entrada->status( )) {
             die(json_encode( listar_grupos_impl($conexion, $entrada->output('evaluacion')) ));
         }
+        
+        $entrada = new input( );
+        $entrada->validate($_POST, 'servicio', make_filter(match_predicate('consultar_grupo')));
+        $entrada->validate($_POST, 'grupo', builtin_filter(FILTER_VALIDATE_INT));
+        if($entrada->status( )) {
+            die(json_encode( consultar_grupo_impl($conexion, $entrada->output('grupo')) ));
+        }
 
         $entrada = new input();
         $entrada->validate($_POST, 'servicio', make_filter(match_predicate('crear_grupo')));
+        $entrada->validate($_POST, 'evaluacion', builtin_filter(FILTER_VALIDATE_INT));
         $entrada->validate($_POST, 'uea', builtin_filter(FILTER_VALIDATE_INT));
         $entrada->validate($_POST, 'clave', make_filter('is_string'));
         $entrada->validate($_POST, 'cupo', builtin_filter(FILTER_VALIDATE_INT));
-        $entrada->validate($_POST, 'evaluacion', builtin_filter(FILTER_VALIDATE_INT));
         $entrada->validate($_POST, 'profesores', json_filter('filtro_profesores'));
         $entrada->validate($_POST, 'horarios', json_filter('filtro_horarios'));
         if($entrada->status( )){
-            die(json_encode( crear_grupo_impl($conexion, $entrada->output('uea'), $entrada->output('clave'), $entrada->output('cupo'), $entrada->output('evaluacion'), $entrada->output('profesores' ), $entrada->output('horarios')) ));
+            die(json_encode( crear_grupo_impl($conexion, $entrada->output('evaluacion'), $entrada->output('uea'), $entrada->output('clave'), $entrada->output('cupo'), $entrada->output('profesores' ), $entrada->output('horarios')) ));
         }
 
         $entrada = new input();
@@ -70,12 +70,12 @@
     }
     
    // filtros de datos de entrada
-   //&& in_array($horario['dia'], [ 'LU', 'MA', 'MI', 'JU', 'VI' ])
+
     function filtro_horarios($horarios) {
         if (is_array($horarios) && array_predicate(function($horario) {
-           return isset($horario['dia'])     &&
-                  isset($horario['inicio']) && ($horario['inicio'] = date_parse_from_format('H:i', $horario['inicio']))['error_count'] == 0 &&
-                  isset($horario['termino']) && ($horario['termino'] = date_parse_from_format('H:i', $horario['termino']))['error_count'] == 0 &&
+           return isset($horario['dia']) && array_predicate(fn($s) => in_array($s, [ 'LU', 'MA', 'MI', 'JU', 'VI' ]))(@explode(',', $horario['dia'])) &&
+                  isset($horario['inicio']) && ($horario['inicio'] = @date_parse_from_format('H:i', $horario['inicio']))['error_count'] == 0 &&
+                  isset($horario['termino']) && ($horario['termino'] = @date_parse_from_format('H:i', $horario['termino']))['error_count'] == 0 &&
                   mktime($horario['inicio']['hour'], $horario['inicio']['minute']) <= mktime($horario['termino']['hour'], $horario['termino']['minute']);
         })($horarios)) {
             return $horarios;
@@ -111,13 +111,11 @@
    }
    
    // implementación de casos de uso
+   
     function listar_evaluaciones_impl($conexion){
         $actual = json_decode(file_get_contents("https://callix.azc.uam.mx/rcc/boligrama/scripts/trimestre.php"));
-        $conexion->query('INSERT IGNORE INTO evaluaciones (trimestre, periodo, tipo) VALUES (?, ?, ?)', $actual->anyo, $actual->periodo, 'GLO');
-        $conexion->query('INSERT IGNORE INTO evaluaciones (trimestre, periodo, tipo) VALUES (?, ?, ?)', $actual->anyo, $actual->periodo, 'REC');
-        
-        $filas = $conexion->query('SELECT evaluacion, trimestre, periodo, tipo FROM evaluaciones');
-        return ['estado' => true, 'valor' => $filas];
+        $conexion->query('INSERT IGNORE INTO evaluaciones (trimestre, periodo, tipo) VALUES (?, ?, ?), (?, ?, ?)', $actual->anyo, $actual->periodo, 'GLO', $actual->anyo, $actual->periodo, 'REC');
+        return [ 'estado' => true, 'valor' => $conexion->query('SELECT evaluacion, trimestre, periodo, tipo FROM evaluaciones') ];
     }
    
     function listar_grupos_impl($conexion, $evaluacion){
@@ -136,23 +134,23 @@
         foreach (agrupa_por($horarios, 'grupo') as $id_grupo => $actual) {
            $grupos[$id_grupo]['horarios'] = $actual;
         }
-        return ['estado' => true, 'valor' => $grupos ];
+        return [ 'estado' => true, 'valor' => $grupos ];
     }
-    //--------- prueba ---------
-    function cosulta_grupo_impl($conexion, $grupo_consulta){
+
+    function consultar_grupo_impl($conexion, $id_grupo){
         list($grupos, $profesores, $horarios) = $conexion->multi_query("
-        SELECT grupo, uea, nombre, horas, clave, cupo FROM grupos JOIN ueas USING (uea) WHERE grupo = ?;
-        SELECT profesor, apellidos, nombre FROM profesores_grupo JOIN profesores USING (profesor) WHERE grupo = ?;
-        SELECT salon, nombre, dia, inicio, termino FROM horarios_grupo JOIN salones USING (salon) WHERE grupo = ?;        
-        ", $grupo_consulta, $grupo_consulta, $grupo_consulta);
-        $grupo = [];
-        $grupo = $grupos[0];
-        if(!empty($profesores)) $grupo['profesores'] = $profesores;
-        if(!empty($horarios)) $grupo['horarios'] = $horarios;
-        return ['estado' => true, 'valor' => $grupo ];
+           SELECT grupo, uea, nombre, horas, clave, cupo FROM grupos JOIN ueas USING (uea) WHERE grupo = ?;
+           SELECT profesor, apellidos, nombre FROM profesores_grupo JOIN profesores USING (profesor) WHERE grupo = ?;
+           SELECT salon, nombre, dia, inicio, termino FROM horarios_grupo JOIN salones USING (salon) WHERE grupo = ?;        
+        ", $id_grupo, $id_grupo, $id_grupo);
+        if (!empty($grupos)) {
+           return ['estado' => true, 'valor' => array_merge($grupos[0], [ 'profesores' => $profesores, 'horarios' => $horarios ];
+        } else {
+           return ['estado' => false, 'valor' => 'inexistente' ];
+        }
     }
-    //-------------------------
-    function crear_grupo_impl($conexion, $uea, $clave, $cupo, $evaluacion, $profesores, $horarios){
+
+    function crear_grupo_impl($conexion, $evaluacion, $uea, $clave, $cupo, $profesores, $horarios){
         $conexion->query('INSERT IGNORE INTO grupos (uea, clave, evaluacion, cupo) VALUES (?, ?, ?, ?)', $uea, $clave, $evaluacion, $cupo);
         if(!$conexion->affected_rows){
             return ['estado' => false, 'valor' => 'duplicado'];
@@ -187,6 +185,6 @@
     
     function eliminar_grupo_impl($conexion, $grupo){
         $conexion->query('DELETE FROM grupos WHERE grupo = ?', $grupo);
-        return ($conexion->affected_rows ? ['estado' => true, 'valor' => null] : ['estado' => false, 'valor' => 'inexistente'] );  
+        return ($conexion->affected_rows ? ['estado' => true, 'valor' => null] : ['estado' => false, 'valor' => 'inexistente']);
     } 
 ?>
