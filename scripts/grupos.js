@@ -44,8 +44,11 @@ async function inicializa(){
 
 // =================== rutinas auxiliares de dibujo ====================
 
-function dibuja_grupos( ) {
+function dibuja_grupos(grupos) {
     document.getElementById("tabla_grupos_cuerpo").innerHTML = "";
+    for(let grupo of grupos){
+        dibuja_grupo(grupo);
+    }
 }
 
 function redibuja_grupo(tr) {
@@ -61,7 +64,6 @@ function redibuja_grupo(tr) {
           td.innerText = `${tr.grupo.uea} ${ueas[tr.grupo.uea].nombre}`;
        } else if (td.className == "profesores") {
           let texto = "";
-          td.classList.toggle("alert_notif", tr.grupo.profesores == undefined || tr.grupo.profesores.length == 0);
           for(let profesor of (tr.grupo.profesores ?? [ ])){
               texto += `${profesor} ${profesores[profesor].nombre} ${profesores[profesor].apellidos}\n`;
           }
@@ -149,10 +151,7 @@ function dibuja_horario(valor = null){
 // =================== consultar, agregar, actualizar y eliminar ====================
 
 async function muestra_grupos( ){
-    dibuja_grupos( );
-    for(let grupo of await lista_grupos(document.getElementById("evaluacion").value)){
-        dibuja_grupo(grupo);
-    }
+    dibuja_grupos(await lista_grupos(document.getElementById("evaluacion").value));
 }
 
 async function muestra_registro_grupo(grupo = null){
@@ -205,7 +204,7 @@ async function ejecuta_registro_grupo(forma){
            let tr = document.getElementById(datos.grupo);
            tr.grupo = datos, redibuja_grupo(tr).focus();
         }
-        cancela_registra_grupo();
+        cancela_registro_grupo();
         document.getElementById(datos.grupo).classList.add("success_update");
     }
 }
