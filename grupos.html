@@ -17,7 +17,7 @@
       <script src="./scripts/grupos.js" defer></script>
       <title>Grupos</title>
    </head>
-   <body onload="inicia_sesion(null, true), muestra_trimestres( )">
+   <body onload="inicia_sesion(null, true), inicializa( )">
       <div class="visible_autenticado">
          <div class="sidebar">
             <div class="logo_detalles">
@@ -87,59 +87,43 @@
             <main class="contenedor panel">
                 <div class="contenedor_busqueda" id="contenedor_busqueda">
                     <div>
+                        <input type="hidden" id="evaluacion">
                         Trimestre:
-                        <select id="trimestre_filtro" onchange="filtra_trimestre( )"></select>
+                        <select id="trimestre_periodo"></select>
                         Tipo Evaluacion:
-                        <select id="evaluacion_filtro" onchange="filtra_trimestre( )" value="GLO">
+                        <select id="tipo" value="GLO">
                            <option value="GLO">Global</option>
-                           <option value="REC">Recuperacion</option>
+                           <option value="REC">Recuperación</option>
                         </select>
                     </div>
                     <div>
-                        <button type="button" onclick="muestra_creacion_grupo( )" class="btn btn_green">Crear Grupo</button>
+                        <button type="button" onclick="muestra_registro_grupo()" class="btn btn_green">Crear Grupo</button>
                     </div>
                 </div>
 
                 <div class="contenedor_tabla" id="contenedor_tabla">
                     <table class="tabla_info" id="tabla_grupos">
                         <tr class="tabla_head">
-                           <th>Clave</th> 
                            <th>UEA</th>
-                           <th>Nombre UEA</th>
-                           <th>Horas</th>
+                           <th>Grupo</th> 
                            <th>Cupo</th>
                            <!-- <th>Alertas</th> -->
                            <th>Profesores</th>
-                           <th>Horarios</th>
+                           <th>Lunes</th>
+                           <th>Martes</th>
+                           <th>Miércoles</th>
+                           <th>Jueves</th>
+                           <th>Viernes</th>
                         </tr>
                         <tbody id="tabla_grupos_cuerpo"></tbody>
                     </table>
                 </div>
-                <div id="vista_horario" class="no_visible">
-                  <div>
-                     <div id="info_grupo">
-                        <p>Grupo: <span id="p_grupo"></span> </p>
-                        <p>UEA: <span id="p_uea"></span></p>
-                        <p>Nombre UEA: <span id="p_nombre"></span> </p>
-                        <p>Horas: <span id="p_horas"></span> </p>
-                     </div>
-                     <div><button class="btn btn_red" id="horarios_regresa" onclick="cierra_vista_horarios()">Regresar</button></div>
-                  </div>
-                  <table class="tabla_info" id="tabla_horarios">
-                     <tr class="tabla_head">
-                        <th>Días</th> 
-                        <th>Salón</th>
-                        <th>Incio</th>
-                        <th>Termino</th>
-                     </tr>
-                     <tbody id="tabla_horarios_cuerpo"></tbody>
-                  </table>
-                </div>
-                <form class="no_visible" id="forma_creacion">
-                    <h2 class="titulo_form">Crear Grupo</h2>
+                <form class="no_visible" id="forma_grupo">
+                    <h2 class="titulo_form">Registrar grupo</h2>
+                    <input type="hidden" name="grupo">
                     
                     <label for="uea">UEA: </label>
-                    <select name="uea" id="select_ueas"></select>
+                    <select required name="uea" id="select_ueas"></select>
 
                     <label for="clave">Clave Grupo: </label>
                     <input required type="text" pattern=".+" name="clave" placeholder="Ingresa la clave del grupo">
@@ -147,46 +131,41 @@
                     <label for="cupo">Cupo </label>
                     <input required type="number" name="cupo" placeholder="Ingresa el cupo" value="0" min="0">
 
-                    <label for="num_entradas_profesor">Número de profesores</label>
-                    <input type="number" id="num_entradas_profesor"  name="num_entradas_profesor" min="0" oninput="numero_entradas_profesor('contenedor_profesores', 'num_entradas_profesor')" onkeydown="controlador_keydown(event)" value="0">
+                    <label>Lista de profesores: <button type="button" onclick="dibuja_profesor( )">Nuevo profesor</button></label>
                     <div id="contenedor_profesores"></div>
 
-                    <label for="num_entradas_horarios">Número de entradas de horarios</label>
-                    <input type="number" id="num_entradas_horarios" name="num_entradas_horarios" min="0" oninput="numero_entradas_horarios('contenedor_horarios', 'num_entradas_horarios')" onkeydown="controlador_keydown(event)" value="0">
+                    <label>Lista de horarios: <button type="button" onclick="dibuja_horario( )">Nuevo horario</button></label>
                     <div id="contenedor_horarios"></div>
                     
                     <div class="submit_form">
-                        <button type="button" class="btn btn_blue" onclick="ejecuta_creacion_grupo(this.form)">Crear Grupo</button>
-                        <button type="button" class="btn btn_red" onclick="cancela_creacion_grupo( )">Cancelar</button>
+                        <button type="button" class="btn btn_blue" onclick="ejecuta_registro_grupo(this.form)">Guardar</button>
+                        <button type="button" class="btn btn_red" onclick="cancela_registro_grupo(this.form)">Cancelar</button>
                     </div>
                 </form>
-
-                <form class="no_visible" id="forma_actualizacion">
-                  <h2 class="titulo_form">Actualizar Grupo</h2>
-                  <input type="hidden" name="grupo">
-
-                  <label for="uea">UEA: </label>
-                  <select name="uea" id="select_ueas_act"></select>
-
-                  <label for="clave">Clave Grupo: </label>
-                  <input required type="text" pattern=".+" name="clave" placeholder="Ingresa la clave del grupo">
-              
-                  <label for="cupo">Cupo </label>
-                  <input required type="number" name="cupo" placeholder="Ingresa el cupo" value="0" min="0">
-
-                  <label for="num_entradas_profesor_actualizar">Número de profesores</label>
-                  <input type="number" id="num_entradas_profesor_actualizar"  name="num_entradas_profesor_actualizar" min="0" oninput="numero_entradas_profesor('contenedor_profesores_actualizar', 'num_entradas_profesor_actualizar')" onkeydown="controlador_keydown(event)" value="0">
-                  <div id="contenedor_profesores_actualizar"></div>
-
-                  <label for="num_entradas_horarios_actualizar">Número de entradas de horarios</label>
-                  <input type="number" id="num_entradas_horarios_actualizar" name="num_entradas_horarios_actualizar" min="0" oninput="numero_entradas_horarios('contenedor_horarios_actualizar','num_entradas_horarios_actualizar')" onkeydown="controlador_keydown(event)" value="0">
-                  <div id="contenedor_horarios_actualizar"></div>
-                  
-                  <div class="submit_form">
-                      <button type="button" class="btn btn_blue" onclick="ejecuta_actualizacion_grupo(this.form)">Actualizar Grupo</button>
-                      <button type="button" class="btn btn_red" onclick="cancela_actualizacion_grupo( )">Cancelar</button>
+                <template id="entrada_profesor">
+                  <div class="entrada_form_aux">
+                     <label>Selecciona un profesor:</label>
+                     <select name="profesor" required></select>
+                     <button type="button" class="bx bx-x-circle delete_icon" onclick="this.parentNode.remove( )"></button>
                   </div>
-              </form>
+                </template>
+                <template id="entrada_horario">
+                  <div class="entrada_form_aux">
+                     <label>Selecciona un salón:</label>
+                     <select name="salon"><option value="" selected></select>
+                     <div class="contenedor_checkbox">
+                        <label>Lunes</label><input type="checkbox" name="dia" value="LU">
+                        <label>Martes</label><input type="checkbox" name="dia" value="MA">
+                        <label>Miercoles</label><input type="checkbox" name="dia" value="MI">
+                        <label>Jueves</label><input type="checkbox" name="dia" value="JU">
+                        <label>Viernes</label><input type="checkbox" name="dia" value="VI">
+                     </div>
+                     <div class="time_contenedor">
+                        <label>Horario: </label><input type="time" name="inicio" required><label>-</label><input type="time" name="termino" required>
+                        <button type="button" class="bx bx-x-circle delete_icon" onclick="this.parentNode.remove( )"></button>
+                     </div>
+                  </div>
+                </template>
             </main>
          </div>
       </div>

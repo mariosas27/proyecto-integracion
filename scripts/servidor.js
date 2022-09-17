@@ -137,13 +137,13 @@ async function lista_grupos(evaluacion){
    return await peticion(ajax_post, "scripts/grupos.php", { "servicio": "listar_grupos", "evaluacion": evaluacion }, 1000);
 }
 
-async function crea_grupo(uea, clave, evaluacion, profesores, horarios, cupo){
+async function crea_grupo(evaluacion, uea, clave, profesores, horarios, cupo){
    return await peticion(ajax_post, "scripts/grupos.php", { 
       "servicio": "crear_grupo",
+      "evaluacion": evaluacion,
       "uea": uea, 
       "clave": clave,
       "cupo": cupo, 
-      "evaluacion": evaluacion,
       "profesores": profesores,
       "horarios": horarios
    }, 1000);
@@ -163,8 +163,4 @@ async function actualiza_grupo(grupo, uea, clave, profesores, horarios, cupo){
 
 async function elimina_grupo(grupo){
    return await peticion(ajax_post, "scripts/grupos.php", { "servicio": "eliminar_grupo", "grupo": grupo }, 1000);
-}
-
-async function consulta_grupo(grupo){
-   return await peticion(ajax_post, "scripts/grupos.php", { "servicio": "consultar_grupo", "grupo": grupo }, 1000);
 }

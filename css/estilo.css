@@ -515,7 +515,7 @@ select{
 }
 
 form input, form select{
-   display: block;
+   /*display: block;*/
    margin-bottom: 20px;
 } 
 
@@ -595,10 +595,19 @@ form input, form select{
 }
 
 .entrada_form_aux .time_contenedor input{
-   width: 130px;
+   width: 150px;
 }
 
 .success_update{
-   background-color: #4BB543;
-   color: #fff;
+   animation-name: animacion_fondo_verde;
+   animation-timing-function: ease-in-out;
+   animation-duration: 1s
+}
+@keyframes animacion_fondo_verde {
+   from {
+      background-color: #AAEEAA;
+   }
+   to {
+      background-color: transparent;
+   }
 }

@@ -26,13 +26,6 @@
             die(json_encode( listar_grupos_impl($conexion, $entrada->output('evaluacion')) ));
         }
         
-        $entrada = new input( );
-        $entrada->validate($_POST, 'servicio', make_filter(match_predicate('consultar_grupo')));
-        $entrada->validate($_POST, 'grupo', builtin_filter(FILTER_VALIDATE_INT));
-        if($entrada->status( )) {
-            die(json_encode( consultar_grupo_impl($conexion, $entrada->output('grupo')) ));
-        }
-
         $entrada = new input();
         $entrada->validate($_POST, 'servicio', make_filter(match_predicate('crear_grupo')));
         $entrada->validate($_POST, 'evaluacion', builtin_filter(FILTER_VALIDATE_INT));
@@ -72,8 +65,9 @@
    // filtros de datos de entrada
 
     function filtro_horarios($horarios) {
-        if (is_array($horarios) && array_predicate(function($horario) {
-           return isset($horario['dia']) && array_predicate(fn($s) => in_array($s, [ 'LU', 'MA', 'MI', 'JU', 'VI' ]))(@explode(',', $horario['dia'])) &&
+        if (is_array($horarios) && array_predicate(function(&$horario) {
+           return (!isset($horario['salon']) || is_int($horario['salon'])) &&
+                  isset($horario['dia']) && ($horario['dia'] === '' || array_predicate(fn($s) => in_array($s, [ 'LU', 'MA', 'MI', 'JU', 'VI' ]))(@explode(',', $horario['dia']))) &&
                   isset($horario['inicio']) && ($horario['inicio'] = @date_parse_from_format('H:i', $horario['inicio']))['error_count'] == 0 &&
                   isset($horario['termino']) && ($horario['termino'] = @date_parse_from_format('H:i', $horario['termino']))['error_count'] == 0 &&
                   mktime($horario['inicio']['hour'], $horario['inicio']['minute']) <= mktime($horario['termino']['hour'], $horario['termino']['minute']);
@@ -94,7 +88,6 @@
       $res = [ ];
       foreach ($filas as $fila) {
          $clave = $fila[$columna];
-         unset($fila[$columna]);
          $res[$clave] = $fila;
       }
       return $res;
@@ -119,35 +112,22 @@
     }
    
     function listar_grupos_impl($conexion, $evaluacion){
-        list($dummy, $grupos, $profesores, $horarios) = $conexion->multi_query("
+        list($dummy, $grupos, $profesores, $horarios) = $conexion->multi_query('
            CREATE TEMPORARY TABLE interes ENGINE=MEMORY AS SELECT grupo FROM grupos WHERE evaluacion = ?;
-           SELECT grupo, uea, nombre, horas, clave, cupo FROM grupos JOIN ueas USING (uea) WHERE grupo IN (SELECT grupo FROM interes);
-           SELECT grupo, profesor, apellidos, nombre FROM profesores_grupo JOIN profesores USING (profesor) WHERE grupo IN (SELECT grupo FROM interes);
-           SELECT grupo, salon, nombre, dia, inicio, termino FROM horarios_grupo JOIN salones USING (salon) WHERE grupo IN (SELECT grupo FROM interes);
+           SELECT grupo, uea, horas, clave, cupo FROM grupos JOIN ueas USING (uea) WHERE grupo IN (SELECT grupo FROM interes);
+           SELECT grupo, profesor FROM profesores_grupo JOIN profesores USING (profesor) WHERE grupo IN (SELECT grupo FROM interes);
+           SELECT grupo, salon, dia, TIME_FORMAT(inicio, "%H:%i") AS inicio, TIME_FORMAT(inicio, "%H:%i") AS termino FROM horarios_grupo JOIN salones USING (salon) WHERE grupo IN (SELECT grupo FROM interes);
            DROP TEMPORARY TABLE interes;
-        ", $evaluacion);
+        ', $evaluacion);
         
         $grupos = asocia_por($grupos, 'grupo');
         foreach (agrupa_por($profesores, 'grupo') as $id_grupo => $actual) {
-           $grupos[$id_grupo]['profesores'] = $actual;
+           $grupos[$id_grupo]['profesores'] = array_column($actual, 'profesor');
         }
         foreach (agrupa_por($horarios, 'grupo') as $id_grupo => $actual) {
            $grupos[$id_grupo]['horarios'] = $actual;
         }
-        return [ 'estado' => true, 'valor' => $grupos ];
-    }
-
-    function consultar_grupo_impl($conexion, $id_grupo){
-        list($grupos, $profesores, $horarios) = $conexion->multi_query("
-           SELECT grupo, uea, nombre, horas, clave, cupo FROM grupos JOIN ueas USING (uea) WHERE grupo = ?;
-           SELECT profesor, apellidos, nombre FROM profesores_grupo JOIN profesores USING (profesor) WHERE grupo = ?;
-           SELECT salon, nombre, dia, inicio, termino FROM horarios_grupo JOIN salones USING (salon) WHERE grupo = ?;        
-        ", $id_grupo, $id_grupo, $id_grupo);
-        if (!empty($grupos)) {
-           return ['estado' => true, 'valor' => array_merge($grupos[0], [ 'profesores' => $profesores, 'horarios' => $horarios ];
-        } else {
-           return ['estado' => false, 'valor' => 'inexistente' ];
-        }
+        return [ 'estado' => true, 'valor' => array_values($grupos) ];
     }
 
     function crear_grupo_impl($conexion, $evaluacion, $uea, $clave, $cupo, $profesores, $horarios){
