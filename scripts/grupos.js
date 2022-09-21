@@ -91,6 +91,12 @@ function dibuja_grupo(grupo) {
         td.className = campo;
         tr.appendChild(td);
     }
+    let alertas = document.createElement("button"), tdAlertas = document.createElement("td");
+    alertas.onclick = ( ) => alert('aquí van las alertas');
+    // alertas.classList.add("bx", "bx-alarm-exclamation", "edit_icon");
+    tdAlertas.className = "alerta";
+    tdAlertas.appendChild(alertas);
+    tr.appendChild(tdAlertas);
 
     let btnActualiza = document.createElement("button"), tdActualiza = document.createElement("td");
     btnActualiza.onclick = ( ) => muestra_registro_grupo(tr.grupo);
@@ -228,11 +234,11 @@ function inserta_tabla_salones(grupo, nombre_grupo, salon, dia, inicio, termino)
             if(!empalmes_salon.has(grupo)){
                 empalmes_salon.set(grupo, []);
             }
-            empalmes_salon.get(grupo).push(`Empalme con ${tabla_salones.get(salon).get(dia).get(aux_grupo).nombre} -> Día ${dia}, horario: ${inicio} - ${termino}`);
+            empalmes_salon.get(grupo).push(`Empalme con ${aux_grupo} ${tabla_salones.get(salon).get(dia).get(aux_grupo).nombre} -> Día ${dia}, horario: ${inicio} - ${termino}`);
             if(!empalmes_salon.has(aux_grupo)){
                 empalmes_salon.set(aux_grupo, []);
             }
-            empalmes_salon.get(aux_grupo).push(`Empalme con ${tabla_salones.get(salon).get(dia).get(aux_grupo).nombre} -> Día ${dia}, horario: ${inicio} - ${termino}`);
+            empalmes_salon.get(aux_grupo).push(`Empalme con ${grupo} ${nombre_grupo} -> Día ${dia}, horario: ${inicio} - ${termino}`);
         }
     }
     tabla_salones.get(salon).get(dia).set(grupo, {nombre: nombre_grupo, inicio: inicio, termino: termino})
