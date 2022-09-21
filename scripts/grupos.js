@@ -1,5 +1,4 @@
-let profesores = {}, salones = {}, ueas = {};
-
+let profesores = {}, salones = {}, ueas = {}, tabla_salones = new Map(), empalmes_salon = new Map();
 async function inicializa(){
     let select_profesor = document.getElementById("entrada_profesor").content.querySelector("select[name=profesor]"), 
         select_salon = document.getElementById("entrada_horario").content.querySelector("select[name=salon]"), 
@@ -40,6 +39,12 @@ async function inicializa(){
        document.getElementById("evaluacion").value = tabla.get(`${document.getElementById("trimestre_periodo").value}-${document.getElementById("tipo").value}`);
        muestra_grupos();
     })( );
+    for(let salon of Object.values(salones)){
+        tabla_salones.set(salon.salon, new Map());
+        for(let dia of ['LU','MA','MI','JU','VI']){
+            tabla_salones.get(salon.salon).set(dia, new Map());
+        }
+    }
 }
 
 // =================== rutinas auxiliares de dibujo ====================
@@ -56,6 +61,7 @@ function redibuja_grupo(tr) {
     for (let horario of (tr.grupo.horarios ?? [ ])) {
        for (let dia of (horario.dia == "" ? [ ] : horario.dia.split(","))) {
           datosDia[dia] += `${salones[horario.salon].nombre}\n${horario.inicio} - ${horario.termino}\n`;
+          inserta_tabla_salones(tr.grupo.grupo, tr.grupo.clave, horario.salon, dia, horario.inicio, horario.termino);
        }
     }
    
@@ -152,6 +158,8 @@ function dibuja_horario(valor = null){
 
 async function muestra_grupos( ){
     dibuja_grupos(await lista_grupos(document.getElementById("evaluacion").value));
+    console.table(tabla_salones.get(1))
+    console.log(empalmes_salon);
 }
 
 async function muestra_registro_grupo(grupo = null){
@@ -212,4 +220,37 @@ async function ejecuta_registro_grupo(forma){
 async function ejecuta_eliminacion_grupo(grupo) {
     await elimina_grupo(grupo.grupo);
     document.getElementById(grupo.grupo).remove( );
+}
+
+function inserta_tabla_salones(grupo, nombre_grupo, salon, dia, inicio, termino) {
+    for (let aux_grupo of tabla_salones.get(salon).get(dia).keys()) {
+        if(!check_empalme(tabla_salones.get(salon).get(dia).get(aux_grupo).inicio, tabla_salones.get(salon).get(dia).get(aux_grupo).termino, inicio, termino)){
+            if(!empalmes_salon.has(grupo)){
+                empalmes_salon.set(grupo, []);
+            }
+            empalmes_salon.get(grupo).push(`Empalme con ${tabla_salones.get(salon).get(dia).get(aux_grupo).nombre} -> Día ${dia}, horario: ${inicio} - ${termino}`);
+            if(!empalmes_salon.has(aux_grupo)){
+                empalmes_salon.set(aux_grupo, []);
+            }
+            empalmes_salon.get(aux_grupo).push(`Empalme con ${tabla_salones.get(salon).get(dia).get(aux_grupo).nombre} -> Día ${dia}, horario: ${inicio} - ${termino}`);
+        }
+    }
+    tabla_salones.get(salon).get(dia).set(grupo, {nombre: nombre_grupo, inicio: inicio, termino: termino})
+  }
+
+function check_empalme(time1_inicio, time1_fin, time2_inicio, time2_fin){
+    const [hours1_inicio, minutes1_inicio] = time1_inicio.split(':');
+    const [hours1_fin, minutes1_fin] = time1_fin.split(':');
+
+    const [hours2_inicio, minutes2_inicio] = time2_inicio.split(':');
+    const [hours2_fin, minutes2_fin] = time2_fin.split(':');
+
+    const date1_inicio = new Date(2022, 0, 1, +hours1_inicio, +minutes1_inicio);
+    const date1_fin = new Date(2022, 0, 1, +hours1_fin, +minutes1_fin);
+
+    const date2_inicio = new Date(2022, 0, 1, +hours2_inicio, +minutes2_inicio);
+    const date2_fin = new Date(2022, 0, 1, +hours2_fin, +minutes2_fin);
+
+    return (date2_inicio.getTime() >= date1_fin.getTime() && date2_fin.getTime() > date1_fin.getTime()) || 
+        (date1_inicio.getTime() >= date2_fin.getTime() && date1_fin.getTime() > date2_fin.getTime());
 }
