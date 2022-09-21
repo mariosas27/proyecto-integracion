@@ -116,7 +116,7 @@
            CREATE TEMPORARY TABLE interes ENGINE=MEMORY AS SELECT grupo FROM grupos WHERE evaluacion = ?;
            SELECT grupo, uea, horas, clave, cupo FROM grupos JOIN ueas USING (uea) WHERE grupo IN (SELECT grupo FROM interes);
            SELECT grupo, profesor FROM profesores_grupo JOIN profesores USING (profesor) WHERE grupo IN (SELECT grupo FROM interes);
-           SELECT grupo, salon, dia, TIME_FORMAT(inicio, "%H:%i") AS inicio, TIME_FORMAT(inicio, "%H:%i") AS termino FROM horarios_grupo JOIN salones USING (salon) WHERE grupo IN (SELECT grupo FROM interes);
+           SELECT grupo, salon, dia, TIME_FORMAT(inicio, "%H:%i") AS inicio, TIME_FORMAT(termino, "%H:%i") AS termino FROM horarios_grupo JOIN salones USING (salon) WHERE grupo IN (SELECT grupo FROM interes);
            DROP TEMPORARY TABLE interes;
         ', $evaluacion);
         
