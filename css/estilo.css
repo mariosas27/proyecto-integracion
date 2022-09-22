@@ -589,6 +589,7 @@ form input, form select{
 .time_contenedor{
    display: flex;
    flex-direction: row;
+   align-items: center;
 }
 .entrada_form_aux .time_contenedor input, .entrada_form_aux .time_contenedor label{
    margin-right: 20px;
@@ -610,4 +611,17 @@ form input, form select{
    to {
       background-color: transparent;
    }
+}
+
+.alerta_fila{
+   background-color:   #f3ff98  ;
+}
+
+.entrada_profesor_select{
+   display: flex;
+   align-items: center;
+   gap: 10px;
+}
+form select.select_profesor{
+   margin-bottom: 0;
 }
