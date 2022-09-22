@@ -169,8 +169,6 @@ function dibuja_horario(valor = null){
 
 async function muestra_grupos( ){
     dibuja_grupos(await lista_grupos(document.getElementById("evaluacion").value));
-    console.table(tabla_salones.get(1))
-    console.log(empalmes_salon);
 }
 
 async function muestra_registro_grupo(grupo = null){
