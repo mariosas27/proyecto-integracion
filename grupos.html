@@ -145,8 +145,10 @@
                 <template id="entrada_profesor">
                   <div class="entrada_form_aux">
                      <label>Selecciona un profesor:</label>
-                     <select name="profesor" required></select>
-                     <button type="button" class="bx bx-x-circle delete_icon" onclick="this.parentNode.remove( )"></button>
+                     <div class="entrada_profesor_select">
+                        <select name="profesor" class="select_profesor" required></select>
+                        <button type="button" class="bx bx-x-circle delete_icon" onclick="this.parentNode.remove( )"></button>
+                     </div>
                   </div>
                 </template>
                 <template id="entrada_horario">

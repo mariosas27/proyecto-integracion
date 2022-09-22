@@ -56,12 +56,13 @@ function dibuja_grupos(grupos) {
     }
 }
 
-function redibuja_grupo(tr) {
+function redibuja_grupo(tr, tipo = 'crear') {
     let datosDia = { "LU": "", "MA": "", "MI": "", "JU": "", "VI": "" };
     for (let horario of (tr.grupo.horarios ?? [ ])) {
        for (let dia of (horario.dia == "" ? [ ] : horario.dia.split(","))) {
           datosDia[dia] += `${salones[horario.salon].nombre}\n${horario.inicio} - ${horario.termino}\n`;
-          inserta_tabla_salones(tr.grupo.grupo, tr.grupo.clave, horario.salon, dia, horario.inicio, horario.termino);
+          if(tipo == 'crear')
+            inserta_tabla_salones(parseInt(tr.grupo.grupo), tr.grupo.clave, horario.salon, dia, horario.inicio, horario.termino);
        }
     }
    
@@ -76,7 +77,14 @@ function redibuja_grupo(tr) {
           td.innerText = texto;
        } else if (datosDia[td.className] != undefined) {
           td.innerText = datosDia[td.className];
-       } else if (td.className != "") {
+       }else if(td.className == "alerta"){
+            if(empalmes_salon.has(parseInt(tr.grupo.grupo))){ 
+               dibuja_alertas(parseInt(tr.grupo.grupo));
+               for(let tmp of empalmes_salon.get(parseInt(tr.grupo.grupo))){
+                  dibuja_alertas(tmp.grupo_empalme);        
+               }
+            }
+        } else if (td.className != "") {
           td.innerText = tr.grupo[td.className];
        }
     }
@@ -91,11 +99,8 @@ function dibuja_grupo(grupo) {
         td.className = campo;
         tr.appendChild(td);
     }
-    let alertas = document.createElement("button"), tdAlertas = document.createElement("td");
-    alertas.onclick = ( ) => alert('aquí van las alertas');
-    // alertas.classList.add("bx", "bx-alarm-exclamation", "edit_icon");
+    let tdAlertas = document.createElement("td");
     tdAlertas.className = "alerta";
-    tdAlertas.appendChild(alertas);
     tr.appendChild(tdAlertas);
 
     let btnActualiza = document.createElement("button"), tdActualiza = document.createElement("td");
@@ -173,7 +178,7 @@ async function muestra_registro_grupo(grupo = null){
 }
 
 function muestra_eliminacion_grupo(grupo) {
-    if (confirm(`¿Está seguro de eliminar grupo ${grupo.nombre}`)) {
+    if (confirm(`¿Está seguro de eliminar grupo ${grupo.clave}`)) {
        ejecuta_eliminacion_grupo(grupo);
     }
 }
@@ -213,9 +218,14 @@ async function ejecuta_registro_grupo(forma){
            alert("Se agregó el grupo exitosamente.");
            dibuja_grupo(datos).focus();
         } else {
-           await actualiza_grupo(datos.grupo, datos.uea, datos.clave, datos.profesores, datos.horarios, datos.cupo);
+            await actualiza_grupo(datos.grupo, datos.uea, datos.clave, datos.profesores, datos.horarios, datos.cupo);
            alert("Se actualizó el grupo exitosamente.");
            let tr = document.getElementById(datos.grupo);
+            actualiza_tablas_empalmes(parseInt(datos.grupo));
+            if(document.querySelector(`[id='${parseInt(datos.grupo)}'] .alerta .bx`)){
+                document.querySelector(`[id='${parseInt(datos.grupo)}'] .alerta .bx`).remove();
+            }
+            tr.classList.remove("alerta_fila");
            tr.grupo = datos, redibuja_grupo(tr).focus();
         }
         cancela_registro_grupo();
@@ -225,6 +235,7 @@ async function ejecuta_registro_grupo(forma){
 
 async function ejecuta_eliminacion_grupo(grupo) {
     await elimina_grupo(grupo.grupo);
+    actualiza_tablas_empalmes(grupo.grupo);
     document.getElementById(grupo.grupo).remove( );
 }
 
@@ -234,11 +245,11 @@ function inserta_tabla_salones(grupo, nombre_grupo, salon, dia, inicio, termino)
             if(!empalmes_salon.has(grupo)){
                 empalmes_salon.set(grupo, []);
             }
-            empalmes_salon.get(grupo).push(`Empalme con ${aux_grupo} ${tabla_salones.get(salon).get(dia).get(aux_grupo).nombre} -> Día ${dia}, horario: ${inicio} - ${termino}`);
+            empalmes_salon.get(grupo).push({grupo_empalme: aux_grupo, mensaje: `Empalme con ${tabla_salones.get(salon).get(dia).get(aux_grupo).nombre} -> Día ${dia}, horario: ${inicio} - ${termino}`});
             if(!empalmes_salon.has(aux_grupo)){
                 empalmes_salon.set(aux_grupo, []);
             }
-            empalmes_salon.get(aux_grupo).push(`Empalme con ${grupo} ${nombre_grupo} -> Día ${dia}, horario: ${inicio} - ${termino}`);
+            empalmes_salon.get(aux_grupo).push({grupo_empalme: grupo, mensaje: `Empalme con ${nombre_grupo} -> Día ${dia}, horario: ${inicio} - ${termino}`});
         }
     }
     tabla_salones.get(salon).get(dia).set(grupo, {nombre: nombre_grupo, inicio: inicio, termino: termino})
@@ -247,16 +258,56 @@ function inserta_tabla_salones(grupo, nombre_grupo, salon, dia, inicio, termino)
 function check_empalme(time1_inicio, time1_fin, time2_inicio, time2_fin){
     const [hours1_inicio, minutes1_inicio] = time1_inicio.split(':');
     const [hours1_fin, minutes1_fin] = time1_fin.split(':');
-
     const [hours2_inicio, minutes2_inicio] = time2_inicio.split(':');
     const [hours2_fin, minutes2_fin] = time2_fin.split(':');
-
     const date1_inicio = new Date(2022, 0, 1, +hours1_inicio, +minutes1_inicio);
     const date1_fin = new Date(2022, 0, 1, +hours1_fin, +minutes1_fin);
-
     const date2_inicio = new Date(2022, 0, 1, +hours2_inicio, +minutes2_inicio);
     const date2_fin = new Date(2022, 0, 1, +hours2_fin, +minutes2_fin);
-
     return (date2_inicio.getTime() >= date1_fin.getTime() && date2_fin.getTime() > date1_fin.getTime()) || 
         (date1_inicio.getTime() >= date2_fin.getTime() && date1_fin.getTime() > date2_fin.getTime());
+}
+
+function dibuja_alertas(grupo){
+    let alertas = "";
+    if(empalmes_salon.get(grupo))
+    for(let tmp of empalmes_salon.get(grupo)) alertas += `${tmp.mensaje}\n`;
+    let td = document.querySelector(`[id='${grupo}'] .alerta`);
+    if(document.querySelector(`[id='${grupo}'] .alerta .bx`)){
+        document.querySelector(`[id='${grupo}'] .alerta .bx`).onclick = () =>  alert( alertas);
+        return;
+    }
+    let btnAlerta = document.createElement("button");
+    btnAlerta.alertas = alertas;
+    btnAlerta.onclick = () => alert(alertas);
+    btnAlerta.classList.add("bx", "bx-alarm-exclamation", "edit_icon");
+    td.appendChild(btnAlerta);
+    td.parentNode.classList.add("alerta_fila");
+}
+
+function actualiza_tablas_empalmes(grupo){
+    for(let salon of Object.values(salones)){
+        for(let dia of ['LU','MA','MI','JU','VI']){
+            if(tabla_salones.get(salon.salon).get(dia).has(grupo)){
+                tabla_salones.get(salon.salon).get(dia).delete(grupo);
+            }
+        }
+    }
+    let grupos_empalme = new Set();
+    if(empalmes_salon.has(grupo)){
+        for(let empalme of empalmes_salon.get(grupo)){
+            grupos_empalme.add(empalme.grupo_empalme);
+        }
+    }
+    for(let empalme of grupos_empalme){
+        empalmes_salon.set(empalme, empalmes_salon.get(empalme).filter( (elm) => elm.grupo_empalme != grupo));
+        let tr = document.getElementById(empalme);
+        if(!empalmes_salon.get(empalme).length){
+            tr.classList.remove("alerta_fila");
+            empalmes_salon.delete(empalme);
+            document.querySelector(`[id='${empalme}'] .alerta .bx`).remove();
+        }
+        redibuja_grupo(tr, 'actualiza').focus();
+    }
+    empalmes_salon.delete(grupo);
 }
