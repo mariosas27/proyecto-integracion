@@ -1,4 +1,5 @@
-let profesores = {}, salones = {}, ueas = {}, tabla_salones = new Map(), empalmes_salon = new Map();
+let profesores = {}, salones = {}, ueas = {}, grupos = {};
+
 async function inicializa(){
     let select_profesor = document.getElementById("entrada_profesor").content.querySelector("select[name=profesor]"), 
         select_salon = document.getElementById("entrada_horario").content.querySelector("select[name=salon]"), 
@@ -35,88 +36,96 @@ async function inicializa(){
             document.getElementById("trimestre_periodo").appendChild(opcion);
         }
     }
-    (document.getElementById("trimestre_periodo").onchange = document.getElementById("tipo").onchange = function( ) {
+    (document.getElementById("trimestre_periodo").onchange = document.getElementById("tipo").onchange = async function( ) {
        document.getElementById("evaluacion").value = tabla.get(`${document.getElementById("trimestre_periodo").value}-${document.getElementById("tipo").value}`);
-       muestra_grupos();
+       document.getElementById("tabla_grupos_cuerpo").innerHTML = "";
+       for (let grupo of await lista_grupos(document.getElementById("evaluacion").value)) {
+          dibuja_grupo(grupo, false);
+          grupos[grupo.grupo] = grupo;
+       }
+       calcula_empalmes();
     })( );
-    for(let salon of Object.values(salones)){
-        tabla_salones.set(salon.salon, new Map());
-        for(let dia of ['LU','MA','MI','JU','VI']){
-            tabla_salones.get(salon.salon).set(dia, new Map());
-        }
-    }
 }
 
 // =================== rutinas auxiliares de dibujo ====================
 
-function dibuja_grupos(grupos) {
-    document.getElementById("tabla_grupos_cuerpo").innerHTML = "";
-    for(let grupo of grupos){
-        dibuja_grupo(grupo);
+function redibuja_alertas(empalmes){    
+    let mensajes = { };
+    for (let [tipo_recurso, leyenda] of [ [ "salon", "salón" ], [ "profesor", "profesor" ] ]) {
+       for (let grupo in empalmes[tipo_recurso]) {
+          mensajes[grupo] = (mensajes[grupo] ?? [ ]);
+          mensajes[grupo].push(`Empalme de ${leyenda} con\n` + [ ...new Set(empalmes[tipo_recurso][grupo]) ].map((grupo) => `   ${grupos[grupo].clave} de ${grupos[grupo].uea} ${ueas[grupos[grupo].uea].nombre}`).join("\n"));
+       }
+    }
+
+    for (let tr of Array.from(document.getElementsByClassName("con_alerta"))) {
+       tr.classList.remove("con_alerta");
+       tr.getElementsByClassName("alerta")[0].onclick = null;
+    }
+    for (let grupo in mensajes) {
+       mensajes[grupo] = mensajes[grupo].join("\n");
+       let tr = document.getElementById(grupo);
+       tr.classList.add("con_alerta");
+       tr.getElementsByClassName("alerta")[0].onclick = () => alert(mensajes[grupo]);
     }
 }
 
-function redibuja_grupo(tr, tipo = 'crear') {
+function redibuja_grupo(grupo, focus) {
     let datosDia = { "LU": "", "MA": "", "MI": "", "JU": "", "VI": "" };
-    for (let horario of (tr.grupo.horarios ?? [ ])) {
+    for (let horario of (grupo.horarios ?? [ ])) {
        for (let dia of (horario.dia == "" ? [ ] : horario.dia.split(","))) {
           datosDia[dia] += `${salones[horario.salon].nombre}\n${horario.inicio} - ${horario.termino}\n`;
-          if(tipo == 'crear')
-            inserta_tabla_salones(parseInt(tr.grupo.grupo), tr.grupo.clave, horario.salon, dia, horario.inicio, horario.termino);
        }
     }
    
+    let tr = document.getElementById(grupo.grupo);
     for(let td of tr.childNodes) {
        if (td.className == "uea") {
-          td.innerText = `${tr.grupo.uea} ${ueas[tr.grupo.uea].nombre}`;
+          td.innerText = `${grupo.uea} ${ueas[grupo.uea].nombre}`;
        } else if (td.className == "profesores") {
           let texto = "";
-          for(let profesor of (tr.grupo.profesores ?? [ ])){
+          for(let profesor of (grupo.profesores ?? [ ])){
               texto += `${profesor} ${profesores[profesor].nombre} ${profesores[profesor].apellidos}\n`;
           }
           td.innerText = texto;
        } else if (datosDia[td.className] != undefined) {
           td.innerText = datosDia[td.className];
-       }else if(td.className == "alerta"){
-            if(empalmes_salon.has(parseInt(tr.grupo.grupo))){ 
-               dibuja_alertas(parseInt(tr.grupo.grupo));
-               for(let tmp of empalmes_salon.get(parseInt(tr.grupo.grupo))){
-                  dibuja_alertas(tmp.grupo_empalme);        
-               }
-            }
-        } else if (td.className != "") {
-          td.innerText = tr.grupo[td.className];
+       } else if (td.className != "") {
+          td.innerText = grupo[td.className];
        }
     }
-    return tr;
+    if (focus) {
+       tr.focus();
+    }
 }
 
-function dibuja_grupo(grupo) {
+function dibuja_grupo(grupo, focus) {
     let tr = document.createElement("tr");
-    tr.id = grupo.grupo, tr.grupo = grupo;
+    tr.id = grupo.grupo;
     for(let campo of [ "uea", "clave", "cupo", "profesores", "LU", "MA", "MI", "JU", "VI"]){
         let td = document.createElement("td");
         td.className = campo;
         tr.appendChild(td);
     }
-    let tdAlertas = document.createElement("td");
-    tdAlertas.className = "alerta";
-    tr.appendChild(tdAlertas);
+    
+    let imagenAlerta = document.createElement("img");
+    imagenAlerta.classList.add("alerta");
+    tr.appendChild(imagenAlerta);
 
     let btnActualiza = document.createElement("button"), tdActualiza = document.createElement("td");
-    btnActualiza.onclick = ( ) => muestra_registro_grupo(tr.grupo);
+    btnActualiza.onclick = ( ) => muestra_registro_grupo(grupos[tr.id]);
     btnActualiza.classList.add("bx", "bx-edit-alt","edit_icon");
     tdActualiza.appendChild(btnActualiza);
     tr.appendChild(tdActualiza);
 
     let btnElimina = document.createElement("button"), tdElimina = document.createElement("td");
-    btnElimina.onclick = ( ) => muestra_eliminacion_grupo(tr.grupo);
+    btnElimina.onclick = ( ) => muestra_eliminacion_grupo(grupos[tr.id]);
     btnElimina.classList.add("bx", "bx-x-circle","delete_icon");
     tdElimina.appendChild(btnElimina);
     tr.appendChild(tdElimina);
 
     document.getElementById("tabla_grupos_cuerpo").appendChild(tr);
-    return redibuja_grupo(tr);
+    redibuja_grupo(grupo, focus);
 }
 
 function dibuja_forma(grupo) {
@@ -167,10 +176,6 @@ function dibuja_horario(valor = null){
 
 // =================== consultar, agregar, actualizar y eliminar ====================
 
-async function muestra_grupos( ){
-    dibuja_grupos(await lista_grupos(document.getElementById("evaluacion").value));
-}
-
 async function muestra_registro_grupo(grupo = null){
     dibuja_forma(grupo);
 }
@@ -212,21 +217,15 @@ async function ejecuta_registro_grupo(forma){
         datos.profesores = agrupa_profesores(forma);
         datos.horarios = agrupa_horarios(forma);
         if (forma.grupo.value == "") {
-           datos.grupo = await crea_grupo(document.getElementById("evaluacion").value, datos.uea, datos.clave, datos.profesores, datos.horarios, datos.cupo);
+           datos.grupo = forma.grupo.value = await crea_grupo(document.getElementById("evaluacion").value, datos.uea, datos.clave, datos.profesores, datos.horarios, datos.cupo);
            alert("Se agregó el grupo exitosamente.");
-           dibuja_grupo(datos).focus();
+           dibuja_grupo(datos, true);
         } else {
-            await actualiza_grupo(datos.grupo, datos.uea, datos.clave, datos.profesores, datos.horarios, datos.cupo);
+           await actualiza_grupo(datos.grupo, datos.uea, datos.clave, datos.profesores, datos.horarios, datos.cupo);
            alert("Se actualizó el grupo exitosamente.");
-           let tr = document.getElementById(datos.grupo);
-            actualiza_tablas_empalmes(parseInt(datos.grupo));
-            if(document.querySelector(`[id='${parseInt(datos.grupo)}'] .alerta .bx`)){
-                document.querySelector(`[id='${parseInt(datos.grupo)}'] .alerta .bx`).remove();
-            }
-            tr.classList.remove("alerta_fila");
-           tr.grupo = datos, redibuja_grupo(tr).focus();
+           redibuja_grupo(datos, true);
         }
-        cancela_registro_grupo();
+        grupos[datos.grupo] = datos, calcula_empalmes();
         document.getElementById(datos.grupo).classList.add("success_update");
     }
 }
@@ -237,75 +236,62 @@ async function ejecuta_eliminacion_grupo(grupo) {
     document.getElementById(grupo.grupo).remove( );
 }
 
-function inserta_tabla_salones(grupo, nombre_grupo, salon, dia, inicio, termino) {
-    for (let aux_grupo of tabla_salones.get(salon).get(dia).keys()) {
-        if(!check_empalme(tabla_salones.get(salon).get(dia).get(aux_grupo).inicio, tabla_salones.get(salon).get(dia).get(aux_grupo).termino, inicio, termino)){
-            if(!empalmes_salon.has(grupo)){
-                empalmes_salon.set(grupo, []);
-            }
-            empalmes_salon.get(grupo).push({grupo_empalme: aux_grupo, mensaje: `Empalme con ${tabla_salones.get(salon).get(dia).get(aux_grupo).nombre} -> Día ${dia}, horario: ${inicio} - ${termino}`});
-            if(!empalmes_salon.has(aux_grupo)){
-                empalmes_salon.set(aux_grupo, []);
-            }
-            empalmes_salon.get(aux_grupo).push({grupo_empalme: grupo, mensaje: `Empalme con ${nombre_grupo} -> Día ${dia}, horario: ${inicio} - ${termino}`});
-        }
-    }
-    tabla_salones.get(salon).get(dia).set(grupo, {nombre: nombre_grupo, inicio: inicio, termino: termino})
-  }
+function calcula_empalmes() {
+   function marca_tiempo(tiempo) {
+      let [hora, minuto] = tiempo.split(':').map((v) => parseInt(v));
+      return 60 * hora + minuto;
+   }
+   function accesa_crea(obj, ...indices) {
+      for (let i = 0; i < indices.length; obj = obj[indices[i++]]) {
+         if (obj[indices[i]] == undefined) {
+            obj[indices[i]] = (i + 1 < indices.length ? { } : [ ]);
+         }
+      }
+      return obj;
+   }
 
-function check_empalme(time1_inicio, time1_fin, time2_inicio, time2_fin){
-    const [hours1_inicio, minutes1_inicio] = time1_inicio.split(':');
-    const [hours1_fin, minutes1_fin] = time1_fin.split(':');
-    const [hours2_inicio, minutes2_inicio] = time2_inicio.split(':');
-    const [hours2_fin, minutes2_fin] = time2_fin.split(':');
-    const date1_inicio = new Date(2022, 0, 1, +hours1_inicio, +minutes1_inicio);
-    const date1_fin = new Date(2022, 0, 1, +hours1_fin, +minutes1_fin);
-    const date2_inicio = new Date(2022, 0, 1, +hours2_inicio, +minutes2_inicio);
-    const date2_fin = new Date(2022, 0, 1, +hours2_fin, +minutes2_fin);
-    return (date2_inicio.getTime() >= date1_fin.getTime() && date2_fin.getTime() > date1_fin.getTime()) || 
-        (date1_inicio.getTime() >= date2_fin.getTime() && date1_fin.getTime() > date2_fin.getTime());
-}
+   let trabajo = { "salon": { }, "profesor": { } };
+   for (let grupo in grupos) {
+      for (let horario of grupos[grupo].horarios) {
+         if (horario.salon != null) {
+            for(let dia of ['LU','MA','MI','JU','VI']) {
+               if (horario.dia.includes(dia)) {
+                  accesa_crea(trabajo.salon, horario.salon, dia).push([ marca_tiempo(horario.inicio), +grupo ]);
+                  accesa_crea(trabajo.salon, horario.salon, dia).push([ marca_tiempo(horario.termino), -grupo ]);
+                  for (let profesor of (grupos[grupo].profesores ?? [ ])) {
+                     accesa_crea(trabajo.profesor, profesor, dia).push([ marca_tiempo(horario.inicio), +grupo ]);
+                     accesa_crea(trabajo.profesor, profesor, dia).push([ marca_tiempo(horario.termino), -grupo ]);
+                  }
+               }
+            }            
+         }
+      }
+   }
 
-function dibuja_alertas(grupo){
-    let alertas = "";
-    if(empalmes_salon.get(grupo))
-    for(let tmp of empalmes_salon.get(grupo)) alertas += `${tmp.mensaje}\n`;
-    let td = document.querySelector(`[id='${grupo}'] .alerta`);
-    if(document.querySelector(`[id='${grupo}'] .alerta .bx`)){
-        document.querySelector(`[id='${grupo}'] .alerta .bx`).onclick = () =>  alert( alertas);
-        return;
-    }
-    let btnAlerta = document.createElement("button");
-    btnAlerta.alertas = alertas;
-    btnAlerta.onclick = () => alert(alertas);
-    btnAlerta.classList.add("bx", "bx-alarm-exclamation", "edit_icon");
-    td.appendChild(btnAlerta);
-    td.parentNode.classList.add("alerta_fila");
-}
-
-function actualiza_tablas_empalmes(grupo){
-    for(let salon of Object.values(salones)){
-        for(let dia of ['LU','MA','MI','JU','VI']){
-            if(tabla_salones.get(salon.salon).get(dia).has(grupo)){
-                tabla_salones.get(salon.salon).get(dia).delete(grupo);
+   let empalmes = { };
+   for (let tipo_recurso in trabajo) {
+      for (let recurso in trabajo[tipo_recurso]) {
+         for (let dia in trabajo[tipo_recurso][recurso]) {
+            trabajo[tipo_recurso][recurso][dia].sort((a, b) => (a[0] != b[0] ? a[0] - b[0] : a[0] - b[0]));
+            let activos = new Set( );
+            for (let dato of trabajo[tipo_recurso][recurso][dia]) {
+               if (dato[1] > 0) {
+                  activos.add(dato[1]);
+                  if (activos.size > 1) {
+                     for (let otro of activos) {
+                        if (otro != dato[1]) {
+                           accesa_crea(empalmes, tipo_recurso, dato[1]).push(otro);
+                           accesa_crea(empalmes, tipo_recurso, otro).push(dato[1]);
+                        }
+                     }
+                  }
+               } else {
+                  activos.delete(dato[1]);
+               }
             }
-        }
-    }
-    let grupos_empalme = new Set();
-    if(empalmes_salon.has(grupo)){
-        for(let empalme of empalmes_salon.get(grupo)){
-            grupos_empalme.add(empalme.grupo_empalme);
-        }
-    }
-    for(let empalme of grupos_empalme){
-        empalmes_salon.set(empalme, empalmes_salon.get(empalme).filter( (elm) => elm.grupo_empalme != grupo));
-        let tr = document.getElementById(empalme);
-        if(!empalmes_salon.get(empalme).length){
-            tr.classList.remove("alerta_fila");
-            empalmes_salon.delete(empalme);
-            document.querySelector(`[id='${empalme}'] .alerta .bx`).remove();
-        }
-        redibuja_grupo(tr, 'actualiza').focus();
-    }
-    empalmes_salon.delete(grupo);
+         }
+      }
+   }
+   
+   redibuja_alertas(empalmes);
 }

@@ -613,8 +613,15 @@ form input, form select{
    }
 }
 
-.alerta_fila{
-   background-color:   #f3ff98  ;
+.alerta {
+   content:url(../images/sin_alerta.png);
+   width: 75%;
+}
+.con_alerta {
+   background-color: #f3ff98;
+}
+.con_alerta .alerta {
+   content:url(../images/con_alerta.png);
 }
 
 .entrada_profesor_select{
