@@ -43,21 +43,24 @@ async function inicializa(){
           dibuja_grupo(grupo, false);
           grupos[grupo.grupo] = grupo;
        }
-       calcula_empalmes();
+       verifica_inconsistencias();
     })( );
 }
 
 // =================== rutinas auxiliares de dibujo ====================
 
-function redibuja_alertas(empalmes){    
+function redibuja_alertas(inconsistencias){    
     let mensajes = { };
     for (let [tipo_recurso, leyenda] of [ [ "salon", "salón" ], [ "profesor", "profesor" ] ]) {
-       for (let grupo in empalmes[tipo_recurso]) {
+       for (let grupo in inconsistencias[tipo_recurso]) {
           mensajes[grupo] = (mensajes[grupo] ?? [ ]);
-          mensajes[grupo].push(`Empalme de ${leyenda} con\n` + [ ...new Set(empalmes[tipo_recurso][grupo]) ].map((grupo) => `   ${grupos[grupo].clave} de ${grupos[grupo].uea} ${ueas[grupos[grupo].uea].nombre}`).join("\n"));
+          mensajes[grupo].push(`Empalme de ${leyenda} con\n` + [ ...new Set(inconsistencias[tipo_recurso][grupo]) ].map((grupo) => `   ${grupos[grupo].clave} de ${grupos[grupo].uea} ${ueas[grupos[grupo].uea].nombre}`).join("\n"));
        }
     }
-
+    for(let grupo in inconsistencias["sobrecupo"]){
+      mensajes[grupo] = (mensajes[grupo] ?? [ ]);
+      inconsistencias["sobrecupo"][grupo].forEach( salon => mensajes[grupo].push(`Sobrecupo en el salón ${salon}`) );
+    }
     for (let tr of Array.from(document.getElementsByClassName("con_alerta"))) {
        tr.classList.remove("con_alerta");
        tr.getElementsByClassName("alerta")[0].onclick = null;
@@ -225,7 +228,7 @@ async function ejecuta_registro_grupo(forma){
            alert("Se actualizó el grupo exitosamente.");
            redibuja_grupo(datos, true);
         }
-        grupos[datos.grupo] = datos, calcula_empalmes();
+        grupos[datos.grupo] = datos, verifica_inconsistencias();
         document.getElementById(datos.grupo).classList.add("success_update");
     }
 }
@@ -236,7 +239,7 @@ async function ejecuta_eliminacion_grupo(grupo) {
     document.getElementById(grupo.grupo).remove( );
 }
 
-function calcula_empalmes() {
+function verifica_inconsistencias() {
    function marca_tiempo(tiempo) {
       let [hora, minuto] = tiempo.split(':').map((v) => parseInt(v));
       return 60 * hora + minuto;
@@ -292,7 +295,13 @@ function calcula_empalmes() {
          }
       }
    }
-   
+   for(let grupo in grupos){
+      grupos[grupo]['horarios'].forEach( horario => {
+         if(grupos[grupo].cupo > salones[horario.salon]['aforo100']){
+            accesa_crea(empalmes, 'sobrecupo', grupo).push(salones[horario.salon].nombre);
+         }
+      });  
+  }
    redibuja_alertas(empalmes);
 }
 
