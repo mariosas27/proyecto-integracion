@@ -11,6 +11,7 @@
       <link rel="stylesheet" href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' >
       
       <script src="./includes/ajax.js" defer></script>
+      <script src="./includes/csv.js" defer></script>
       <script src="./scripts/servidor.js" defer></script>
       <script src="./scripts/sesion.js" defer></script>
       <script src="./scripts/sidebar.js" defer></script>
@@ -95,6 +96,7 @@
                            <option value="GLO">Global</option>
                            <option value="REC">Recuperación</option>
                         </select>
+                        <button onclick="exportar()">Exportar</button>
                     </div>
                     <div>
                         <button type="button" onclick="muestra_registro_grupo()" class="btn btn_green">Crear Grupo</button>
@@ -104,15 +106,15 @@
                 <div class="contenedor_tabla" id="contenedor_tabla">
                     <table class="tabla_info" id="tabla_grupos">
                         <tr class="tabla_head">
-                           <th>UEA</th>
-                           <th>Grupo</th> 
-                           <th>Cupo</th>
-                           <th>Profesores</th>
-                           <th>Lunes</th>
-                           <th>Martes</th>
-                           <th>Miércoles</th>
-                           <th>Jueves</th>
-                           <th>Viernes</th>
+                           <th class="exportar">UEA</th>
+                           <th class="exportar">Grupo</th> 
+                           <th class="exportar">Cupo</th>
+                           <th class="exportar">Profesores</th>
+                           <th class="exportar">Lunes</th>
+                           <th class="exportar">Martes</th>
+                           <th class="exportar">Miércoles</th>
+                           <th class="exportar">Jueves</th>
+                           <th class="exportar">Viernes</th>
                            <th>Alertas</th>
                         </tr>
                         <tbody id="tabla_grupos_cuerpo"></tbody>

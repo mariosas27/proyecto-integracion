@@ -1,3 +1,7 @@
+function csv_datatype( ) {
+   return "text/csv;charset=utf-8;"
+}
+
 function array2csv(filas) {
    return filas.map((fila) => fila.map(String).map((celda) => celda.replaceAll('"', '""')).map((celda) => `"${celda}"`).join(",")).join("\r\n");
 }

@@ -33,8 +33,7 @@ async function peticion(funcion, url, ...parametros) {
             } else if (res.valor == "duplicado") {
                return window.alert("Ya existe un grupo con la misma información. Favor de verificar.");
             }
-         }
-          else if (script == "sesion") {
+         } else if (script == "sesion") {
             if (res.valor == "token_invalido") {
                return window.alert("El servidor rechazó la verificación de identidad.");
             } else if (res.valor == "email_invalido") {

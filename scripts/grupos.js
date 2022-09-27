@@ -295,3 +295,12 @@ function calcula_empalmes() {
    
    redibuja_alertas(empalmes);
 }
+
+function exportar() {
+   let datos = [ ];
+   datos.push(Array.from(document.getElementsByClassName("tabla_head")[0].getElementsByClassName("exportar")).map((th) => th.innerText));
+   for (let tr of document.getElementById("tabla_grupos_cuerpo").getElementsByTagName("tr")) {
+      datos.push(Array.from(tr.getElementsByTagName("td")).map((td) => td.innerText).slice(0, datos[0].length));
+   }
+   download_blob(array2csv(datos), `${document.getElementById("trimestre_periodo").value}-${document.getElementById("tipo").value}.csv`, csv_datatype( ));
+}
