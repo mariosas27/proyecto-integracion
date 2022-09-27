@@ -632,3 +632,6 @@ form input, form select{
 form select.select_profesor{
    margin-bottom: 0;
 }
+img.alerta{
+   width: 55px;
+}
